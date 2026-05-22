@@ -203,6 +203,73 @@ header{width:100%;max-width:960px;display:flex;flex-direction:column;align-items
 @keyframes popIn{from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;}}
 .emoji-slot .emoji-q{font-size:32px;color:var(--muted);user-select:none;}
 .emoji-progress{display:flex;gap:5px;justify-content:center;}
+
+/* ══ LORE PANEL ══ */
+.lore-panel{background:var(--surface);border:1px solid var(--border2);border-radius:16px;margin-bottom:20px;padding:28px 24px;box-shadow:0 0 40px rgba(200,170,110,.06);position:relative;overflow:hidden;}
+.lore-header-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.lore-badge-icon{font-family:'Cinzel',serif;font-size:22px;width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#2a1a0a,#3d2808);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.lore-title{font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;}
+.lore-subtitle{font-size:11px;color:var(--muted);margin-top:2px;}
+.lore-clue-box{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:18px 22px;margin-bottom:10px;animation:loreReveal .55s cubic-bezier(.34,1.56,.64,1);}
+@keyframes loreReveal{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.lore-clue-label{font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.lore-clue-text{font-family:'Crimson Text',serif;font-size:clamp(16px,2.5vw,21px);font-style:italic;color:var(--gold2);line-height:1.65;text-shadow:0 1px 12px rgba(200,170,110,.15);}
+.lore-progress-row{display:flex;align-items:center;gap:12px;margin-top:4px;}
+.lore-progress-label{font-size:11px;letter-spacing:1px;color:var(--muted);}
+.lore-locked-hint{font-size:12px;color:var(--border);font-style:italic;letter-spacing:1px;text-align:center;padding:14px;}
+
+/* ══ SILHOUETTE PANEL ══ */
+.sil-panel{background:var(--surface);border:1px solid var(--border2);border-radius:16px;margin-bottom:20px;padding:28px 24px;box-shadow:0 0 40px rgba(200,170,110,.06);display:flex;flex-direction:column;align-items:center;gap:16px;}
+.sil-header{text-align:center;}
+.sil-title{font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:4px;}
+.sil-subtitle{font-size:11px;color:var(--muted);letter-spacing:1px;}
+.sil-frame{position:relative;width:280px;height:280px;max-width:min(80vw,280px);max-height:min(80vw,280px);display:flex;align-items:center;justify-content:center;}
+.sil-canvas{border-radius:16px;width:100%;height:100%;display:block;box-shadow:0 0 40px rgba(0,0,0,.6),0 0 80px rgba(200,170,110,.04);}
+.sil-stage-row{display:flex;gap:8px;align-items:center;justify-content:center;}
+.sil-stage-pip{height:5px;border-radius:3px;background:var(--border);transition:background .4s,box-shadow .4s;flex:1;max-width:40px;}
+.sil-stage-pip.used{background:var(--muted);}
+.sil-stage-pip.active{background:var(--gold);box-shadow:0 0 8px var(--gold);}
+.sil-stage-labels{display:flex;gap:8px;width:100%;max-width:240px;justify-content:center;}
+.sil-stage-label{font-size:9px;letter-spacing:1px;color:var(--muted);text-align:center;flex:1;max-width:40px;}
+
+/* ══ MOBILE ══ */
+@media(max-width:640px){
+  header{padding:14px 10px 0;}
+  .logo{font-size:clamp(22px,8vw,38px);letter-spacing:2px;}
+  .logo-divider{width:80%;}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-radius:8px;padding-bottom:1px;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{padding:9px 13px;font-size:10px;letter-spacing:1px;flex-shrink:0;}
+  .mode-panel{padding:0 8px 50px;}
+  .splash-panel{aspect-ratio:16/8;}
+  .ability-slot{width:56px;height:56px;}
+  .ability-slots{gap:8px;}
+  .col-headers,.guess-row{grid-template-columns:100px repeat(7,1fr);}
+  .cell{min-height:52px;padding:6px 4px;}
+  .cell-val{font-size:10px;}
+  .cell-icon{font-size:14px;}
+  .name-avatar{width:32px;height:32px;}
+  .ult-clues-row{grid-template-columns:1fr 1fr;}
+  .modal{padding:22px 14px;max-width:98vw;border-radius:14px;}
+  .modal-title{font-size:24px;letter-spacing:2px;}
+  .lore-clue-text{font-size:16px;}
+  .sil-frame{width:220px;height:220px;}
+  .quote-panel{padding:22px 16px;}
+  .quote-text{font-size:clamp(16px,4vw,22px);}
+  .search-input{font-size:15px;padding:12px 14px;}
+  .emoji-slot{width:66px;height:66px;font-size:32px;}
+  .splashart-frame{aspect-ratio:4/3;}
+  .ult-icon-wrap{width:80px;height:80px;}
+}
+@media(max-width:380px){
+  .tab{padding:8px 10px;font-size:9px;}
+  .col-headers{display:none;}
+  .guess-row{grid-template-columns:86px repeat(7,1fr);}
+  .cell{min-height:46px;}
+  .cell-val{font-size:9px;}
+  .sil-frame{width:180px;height:180px;}
+}
+
 </style>
 </head>
 <body>
@@ -223,6 +290,7 @@ header{width:100%;max-width:960px;display:flex;flex-direction:column;align-items
   <button class="tab" onclick="switchMode('emoji')"   id="tab-emoji">🎭 Emotikony</button>
   <button class="tab" onclick="switchMode('splashart')" id="tab-splashart">🖼️ Splash Art</button>
   <button class="tab" onclick="switchMode('ultimate')" id="tab-ultimate">⚡ Ultimate "R"</button>
+  <button class="tab" onclick="switchMode('lore')" id="tab-lore">📖 Lore</button>
 </div>
 
 <div id="loading">
@@ -387,6 +455,70 @@ header{width:100%;max-width:960px;display:flex;flex-direction:column;align-items
     <div class="dropdown" id="ultimateDrop" style="display:none"></div>
   </div>
   <div class="q-guesses" id="ultimateGuesses"></div>
+</div>
+
+
+<!-- ══ MODE 7: LORE ══ -->
+<div class="mode-panel" id="panel-lore">
+  <div class="lore-panel">
+    <div class="lore-header-row">
+      <div class="lore-badge-icon">📖</div>
+      <div>
+        <div class="lore-title">Czyje to Lore?</div>
+        <div class="lore-subtitle" id="loreSubtitle">Odgadnij bohatera na podstawie historii</div>
+      </div>
+    </div>
+    <!-- clue boxes revealed one by one -->
+    <div id="loreClue0" class="lore-clue-box">
+      <div class="lore-clue-label">📌 Wskazówka 1</div>
+      <div class="lore-clue-text" id="loreClueText0">…</div>
+    </div>
+    <div id="loreClue1" class="lore-clue-box" style="display:none">
+      <div class="lore-clue-label">📌 Wskazówka 2</div>
+      <div class="lore-clue-text" id="loreClueText1">…</div>
+    </div>
+    <div id="loreClue2" class="lore-clue-box" style="display:none">
+      <div class="lore-clue-label">💬 Cytat z lore</div>
+      <div class="lore-clue-text" id="loreClueText2">…</div>
+    </div>
+    <div id="loreClue3" class="lore-clue-box" style="display:none">
+      <div class="lore-clue-label">🤝 Relacje</div>
+      <div class="lore-clue-text" id="loreClueText3">…</div>
+    </div>
+    <div id="loreClue4" class="lore-clue-box" style="display:none">
+      <div class="lore-clue-label">🌍 Ostatnia wskazówka</div>
+      <div class="lore-clue-text" id="loreClueText4">…</div>
+    </div>
+    <div class="lore-progress-row">
+      <div class="lore-progress-label">Wskazówki: <span id="loreRevealedCount">1</span> / 5</div>
+      <div id="loreProgress" class="ability-progress"></div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" id="loreSearch" type="text" placeholder="🔍  Kto to jest?">
+    <div class="dropdown" id="loreDrop" style="display:none"></div>
+  </div>
+  <div class="q-guesses" id="loreGuesses"></div>
+</div>
+
+<!-- ══ MODE 8: SILHOUETTE ══ -->
+<div class="mode-panel" id="panel-silhouette">
+  <div class="sil-panel">
+    <div class="sil-header">
+      <div class="sil-title">Czyja to sylwetka?</div>
+      <div class="sil-subtitle" id="silSubtitle">Każda pomyłka ujawnia więcej szczegółów</div>
+    </div>
+    <div class="sil-frame">
+      <canvas id="silCanvas" class="sil-canvas" width="280" height="280"></canvas>
+    </div>
+    <div class="sil-stage-row" id="silPips"></div>
+    <div style="font-size:11px;color:var(--muted);letter-spacing:1px;text-align:center" id="silStageLabel">Etap 1/5 — Czarna sylwetka</div>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" id="silSearch" type="text" placeholder="🔍  Wpisz nazwę championa...">
+    <div class="dropdown" id="silDrop" style="display:none"></div>
+  </div>
+  <div class="q-guesses" id="silGuesses"></div>
 </div>
 
 <canvas id="confettiCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:999;display:none;"></canvas>
@@ -661,9 +793,55 @@ const QUOTES = {
   Zoe:["Poczekaj! Chcę się pobawić!","Skrzydła! Gwiazdy! Szaleństwo!"],
 };
 
+
+/* ════ LORE DATA ════ */
+const LORE_DB = {
+  Ahri:{clues:["Ten bohater pochodzi z Ioni i jest częścią rasy Vastaya — pół-zwierząt, pół-ludzi.","Posiada magiczną moc wciągania dusz — siłę, którą zdobyła nie urodzeniem, lecz kradzieżą.","Przez wieki polowała na ludzi, pochłaniając ich wspomnienia i uczucia, nim poczuła wyrzuty sumienia.","Jej najważniejszą relacją jest więź z utraconą przeszłością i poszukiwanie swojego prawdziwego pochodzenia.","Znana jest z dziewięciu ogonów i wabienia wrogów swoim pięknem przed zadaniem śmiertelnego ciosu."],quote:"Moc, którą noszę, skradłam. Martwię się, czy naprawdę jest moja."},
+  Akali:{clues:["Jest wojownikiem Ioni, wychowanym przez zakon Kinkou jako jego ostrze.","Wyrzekła się zakonu i stworzyła własną ścieżkę — nie jako kapłanka, lecz jako zabójczyni sprawiedliwości.","Jej mistrzynią była niegdyś Shen, córka dawnego przywódcy — dziś są po przeciwnych stronach.","Walczy w dymie i cieniu, używając kunai i energii Ki jako broni.","Jej motto: zabijaj tych, na których zakon nie ma odwagi podnieść ręki."],quote:"Nie jestem już twoją uczennicą. Jestem twoim wyrokiem."},
+  Amumu:{clues:["To mumia z Shurimy, uwięziona w klątwie niekończącej się samotności.","Każdy, kto spróbuje go dotknąć, zostaje skrzywdzony przez aurę przekleństwa wydobywającego się z bandaży.","Wędruje przez pustynię i świat w poszukiwaniu jedynej rzeczy, której mu brakuje: przyjaciela.","Legenda mówi, że był niegdyś królewskim dzieckiem, które straciło wszystko przez zdradę.","Jest jednym z najbardziej rozpoznawalnych symboli samotności w świecie Runeterry."],quote:"Czy ktoś chce być moim przyjacielem? Nikt mnie nie lubi…"},
+  Annie:{clues:["To mała dziewczynka z ponurych rejonów Noxus, obdarzona potężną magią ognia.","Jej najlepszym przyjacielem jest niedźwiedź Tibbers — pluszak ożywiony przez jej moc.","Rodzice Anni próbowali stłumić jej moc przez rytuały, ale skończyło się tragedią.","Ma starszą siostrę o imieniu Zoe — choć to inna historia.","Jej niewinność jest przerażająca właśnie dlatego, że kontrastuje z destrukcyjną siłą, jaką dzierży."],quote:"Mam nowego przyjaciela — pożyczysz mu swój płaszcz?"},
+  AurelionSol:{clues:["Jest pradawnym smokiem kosmicznym, który tworzył gwiazdy na prośbę Celestian z Targonu.","Celestianie podstępem uwięzili go za pomocą korony — magicznej pułapki na jego głowie.","Przez tysiąclecia służył jako kosmiczne narzędzie, budując światy, które nie należały do niego.","Po ostatnich wydarzeniach odzyskał wolność i jest wściekły — na wszystkich.","Twierdzi, że to on stworzył każdą gwiazdę na niebie Runeterry, i ma ku temu wszelkie podstawy."],quote:"Stworzyłem gwiazdy, a Celestianie ukradli mi chwałę za to."},
+  Azir:{clues:["Był Cesarzem Shurimy w dawnych czasach, zanim Szurima upadła przez jego ambicję.","Zginął w momencie rytuału Wniebowstąpienia, zdradzony przez swego sługę Xeratha.","Zmartwychwstał jako Ascended — boski wojownik z armią piaskowych żołnierzy.","Jego rywalem jest Xerath, który wchłonął część boskiej energii przeznaczonej dla Azira.","Pragnie odbudować imperium Szurimy i przywrócić jej dawną chwałę."],quote:"Shurima! Twoje dzieci powróciły do ciebie!"},
+  Darius:{clues:["Jest generałem Noxusu, uważanym za ucieleśnienie noxiańskiej filozofii siły.","Jego brat Draven jest jego przeciwieństwem — próżny i teatralny, podczas gdy Darius jest surowy i skuteczny.","Walczył od dziecka, mordując własnego dowódcę, gdy ten chciał się poddać.","Jego symbolem jest topór skąpany we krwi wrogów — Noxian Guillotine.","Wierzy, że słabość jest jedynym prawdziwym grzechem i że Noxus ma prawo rządzić przez siłę."],quote:"Nie ma miejsca na słabych w Noxusie. Żadnego."},
+  Diana:{clues:["Urodziła się w zakonie Solari na Targonie, czcicielach Słońca.","Odkryła zakazane pisma o Lunari — wyznawcach Księżyca — i uwierzyła w ich prawdę.","Zakon Solari próbował ją zabić za herezję, co wyzwoliło w niej moc Aspektu Księżyca.","Jej odwieczną rywalką jest Leona, Aspekt Słońca, choć obie kiedyś były przyjaciółkami.","Nosi sierp jak symbol Księżyca i walczy z brutalną, zimną skutecznością."],quote:"Księżyc nigdy nie prosi o pozwolenie, by świecić."},
+  Draven:{clues:["Jest gladiatorem i egzekutorem Noxusu, bratem generała Dariusa.","Zrobił z publicznych egzekucji spektakle, by zaspokoić własną próżność i pragnienie chwały.","Jego obsesją jest bycie widzianym, oklaskiwanym i uwielbionym przez tłum.","Walczy wirującymi siekierami, które chwyta i rzuca z chirurgiczną precyzją.","Mimo egocentryzmu, zdarza mu się działać honorowo — gdy nikt nie patrzy."],quote:"Witaj w lidze Draven! Ha!"},
+  Ekko:{clues:["Pochodzi z Zaun — biednej, zanieczyszczonej dzielnicy pod Piltoverem.","Jest geniuszem mechanicznym, który zbudował urządzenie do cofania czasu — Z-Drive.","Jego najważniejszą relacją jest przyjaźń z Jinx — choć losy rozdzieliły ich boleśnie.","Walczy z systemem Piltoveru, który gnębi Zaun, używając wolności ruchów i czasu jako broni.","W serialu Arcane jego historia splata się z Jinx, Vi i całą tragedią obu miast."],quote:"Czas jest po mojej stronie — dosłownie."},
+  Fiddlesticks:{clues:["Nie jest czarownikiem ani demonem — jest czymś starszym niż obydwa te pojęcia.","Żywi się strachem i przyjmuje postać stracha na wróble, by wabić ofiary.","Jego prawdziwa forma jest nieznana — to co widzimy, to tylko pożyczone ciało i skradzione wspomnienia.","Mówi się, że istnieje od zarania Runeterry, zanim pojawiły się pierwsze cywilizacje.","Najstraszniejsze w nim jest to, że potrafi brzmieć jak ktoś bliski — by wciągnąć cię w ciemność."],quote:"COKOLWIEK SŁYSZYSZ — NIC TAM NIE MA."},
+  Gangplank:{clues:["Był Królem Bilgewateru — bezwzględnym pirackim władcą, który trzymał miasto żelazną pięścią.","Sarah Fortune (Miss Fortune) zabiła jego matkę i ostatecznie doprowadziła do jego upadku.","Po klęsce odbudował się w cieniu, mściwy i bardziej niebezpieczny niż wcześniej.","Jada pomarańcze, bo wierzy, że chronią go przed trucizną — i ma rację.","Jego broń to pistolet i cutlass, a jego siła — strach, który wzbudza w całym regionie."],quote:"Kto włada morzem, włada całym światem."},
+  Garen:{clues:["Jest rycerzem Demacii i członkiem elitarnej jednostki Dauntless Vanguard.","Jego siostrą jest Lux — tajemna użytkowniczka magii w antymagicznym Demacji.","Sam odkrył magiczne skłonności siostry i stoi przed tragicznym wyborem: lojalność wobec królestwa czy rodziny.","Walczy bez magii, polegając tylko na sile, woli i honorze.","Głęboko wierzy w ideały Demacii, choć świat wokół niego odsłania ich ciemną stronę."],quote:"DEMACIA! Sprawiedliwość zostanie przywrócona!"},
+  Jhin:{clues:["Jest seryjnym mordercą z Ioni, który traktuje zabójstwo jako formę sztuki.","Zakon Kinkou i Shen pojmali go niegdyś i uwięzili — ale Piltover go uwolnił, by wykorzystać jako broń.","Obsesyjnie związany z liczbą cztery — cztery kule, cztery ofiary, cztery płatki kwiatu.","Jego broń — Whisper — ma cztery naboje i każdy czwarty strzał jest potężniejszy.","Uważa piękno i śmierć za nierozłączne — każda egzekucja to dla niego dzieło sztuki."],quote:"Piękno jest bólem. Ból jest sztuką. Cztery."},
+  Jinx:{clues:["Przed przemianą była zwykłą dziewczyną z Zaun — Powder — siostrą Vi.","Tragedia i poczucie bycia odrzuconą przez siostrę złamały jej psychikę i stworzyły Jinx.","Jej obsesją są eksplozje, chaos i broń — od miotacza ognia po wyrzutnię rakiet Fishbones.","Prowadzi wojnę z Piltoverem i całym światem, który ją odrzucił.","W serialu Arcane jej historia jest jedną z najbardziej tragicznych i emocjonujących."],quote:"Zabawa nigdy się nie kończy — chyba że skończy się amunicja!"},
+  Katarina:{clues:["Jest zabójczynią Noxusu z rodu Du Couteau — jednej z najpotężniejszych rodzin szlacheckich.","Jej ojciec, Generał Du Couteau, zaginął pod tajemniczymi okolicznościami.","Zakochała się niegdyś w rycerzu Demacii — lecz lojalność wobec Noxusu stanęła między nimi.","Jej styl walki oparty jest na błyskawicznych rzutach nożami i teleportacji między celami.","Jest uważana za jedną z najlepszych zabójczyń w służbie Noxusu, choć działa często wbrew rozkazom."],quote:"Bez zbędnych słów — tylko ostrze."},
+  Leona:{clues:["Jest Aspektem Słońca — wojowniczką wybraną przez niebiańską gwiazdę Targonu.","Wychowała się wśród zakonu Solari, gdzie jej wojownicza natura była tłumiona przez dogmaty.","Jej najważniejszą relacją jest Diana — dawna przyjaciółka, dziś rywalka jako Aspekt Księżyca.","Walczy z tarczą i mieczem, kanalizując siłę słoneczną w potężne uderzenia.","Wierzy, że jej misją jest chronić słabszych, niosąc światło Słońca nawet w najciemniejsze miejsca."],quote:"Słońce jest sprawiedliwe. Ja też."},
+  Lissandra:{clues:["Jest Lodową Czarownicą z Freljordu, jedną z trzech sióstr, które starożytny pakt z ciemnością zmieniły w potęgę.","Niegdyś zawarła umowę z Pustką, by przetrwać — teraz ukrywa ten sekret za fasadą Nienarodzonych.","Manipuluje Freljordem od wieków, grając frakcje przeciwko sobie, by nikt nie odkrył prawdy.","Jej celem jest zamrożenie całego świata — jako jedyna droga na powstrzymanie Pustki.","Jest antagonistką, która jest przekonana, że tylko ona może uratować Runeterrę, nawet jeśli musi ją zniszczyć."],quote:"Zimno to nie śmierć — zimno to wieczność."},
+  Lucian:{clues:["Jest łowcą Undead i demonów, którego żona Senna została uwięziona przez Threscha.","Przez lata ścigał Threscha, pragnąc uwolnić jej duszę z jego latarni.","W końcu doczekał się jej powrotu — ale to doświadczenie zmieniło ich oboje.","Walczy z dwoma pistoletami naładowanymi Świętym Ogniem, który niszczy przeklętych.","Pochodzi z Demacji i ma silne poczucie sprawiedliwości, choć trauma ukształtowała go w zimnego łowcę."],quote:"Każda kula niesie jej imię."},
+  Mordekaiser:{clues:["Jest pradawnym tyranem z Noxusu, który przez magię krwi podbił połowę kontynentu.","Zginął i zmartwychwstał trzykrotnie — za każdym razem silniejszy i bardziej zdeterminowany.","Stworzył własne podziemne królestwo — Królestwo Śmierci — gdzie rządzi duszami pokonanych.","Jego broń to ogromna buława, którą wykuł ze zbroi wrogów.","Jego lore jest jednym z najobszerniejszych i najciemniejszych w całej Runeterre."],quote:"Śmierć jest tylko nowym początkiem. Moim."},
+  Morgana:{clues:["Jest Ascended — skrzydlatą istotą z Demacji, niegdyś boską wojowniczką razem z siostrą Kayle.","Wybrała pozostanie na ziemi z ludźmi, odrzucając boską misję siostry.","Za ten wybór Kayle ją potępiła, a ona z bólu i gniewu stała się mroczną magią.","Broni przestępców i odrzuconych — bo sama wie, jak to jest być osądzaną przez system.","Jej symbolem są czarne skrzydła i magiczne kajdany, którymi wiąże swych wrogów."],quote:"Bałam się. Teraz daję innym powody do strachu."},
+  Nasus:{clues:["Jest Ascended z Shurimy — boskim strażnikiem wiedzy w postaci szakala.","Spędził tysiące lat w Bibliotece Shurima, chroniąc starożytną wiedzę przed zniszczeniem.","Jego bratem jest Renekton — też Ascended, który stoczył się w szaleństwo przez Pustką.","Jego moc rośnie z każdym życiem, które odbiera — dosłownie, przez upływ czasu.","Targany jest smutkiem i poczuciem winy za los brata, którego musiał uwięzić."],quote:"Czas jest moim sojusznikiem i przekleństwem zarazem."},
+  Pantheon:{clues:["Był prostym wojownikiem z Targonu, który został wybrany przez Aspekt Wojny.","Aspekt zużywał kolejnych nosicieli — aż Atreus, obecny gospodarz, zbuntował się.","W walce z Targon Prime, Atreus ledwo przeżył — lecz w tym momencie stał się czymś więcej niż narzędziem.","Teraz dzieli ciało z Aspektem, lecz to wola Atreusa dominuje.","Walczy włócznią i tarczą w stylu spartańskim i chroni słabszych, bo sam był kiedyś bezbronny."],quote:"Nie byłem gotowy umrzeć. Teraz nie jestem gotowy przestać walczyć."},
+  Pyke:{clues:["Był harpunnikiem z Bilgewateru, który padł ofiarą zdrady własnej załogi.","Zatopiony i pożarty przez wieloryba Void, powrócił jako coś między żywym a martwym.","Nosi listę — każde imię to zdrajca, którego musi uśmiercić, by 'wszystko się wyrównało'.","Jego styl walki oparty jest na skrytobójstwie i hakowaniu wrogów z cienia.","Mimo okrucieństwa jego historia budzi współczucie — był ofiarą zanim stał się katem."],quote:"Wszyscy mnie zostawili na dnie. Teraz zostawiam ich tam."},
+  Riven:{clues:["Była żołnierzem Noxusu, która wierzyła w ideały honoru i siły.","Jej jednostka zniszczyła wioskę w Ioni bronią chemiczną z Zaun — nie wiedziała, co robi.","Z poczucia winy złamała własny miecz i uciekła z Noxusu, by żyć jako wygnanka.","W Ioni odkrywa, że nawet złamany miecz może być ostrzem — dosłownie.","Jej historia jest medytacją o odkupieniu i tym, jak daleko można spaść i wstać."],quote:"Złamany miecz wciąż może być ostrzem."},
+  Ryze:{clues:["Jest jednym z najpotężniejszych magów Runeterry, który przez wieki zbierał Runy Władzy.","Runy te, zebrane razem, mogłyby unicestwić świat — dlatego Ryze ukrywa je przed wszystkimi.","Jego mistrz, Tyrus, wierzył, że Runy można kontrolować — Ryze wie, że to niemożliwe.","Posiada niebieską skórę naznaczoną magicznymi tatuażami — śladami mocy run.","Jego ciężar jest taki: musi pilnować, by nikt nigdy nie zebrał wszystkich Run — łącznie z nim samym."],quote:"Runy są kluczem do czegoś straszliwego — dlatego muszę je wszystkie znaleźć pierwszy."},
+  Shaco:{clues:["Jest klaun-zabójcą, którego prawdziwe pochodzenie jest całkowicie nieznane.","Nikt nie wie, czy jest człowiekiem, demonem, czy czymś skonstruowanym przez czarną magię.","Porzuca pudełka z niespodziankami i klony siebie, by wprowadzać chaos i panikę.","Jego jedynym prawdziwym pragnieniem zdaje się być sam chaos — nie zysk, nie zemsta, tylko spektakl.","Uważa, że śmierć jest najzabawniejszą puentą, i traktuje zabójstwo jak stand-up comedy."],quote:"Skrzynka z niespodzianką — nikt nie lubi niespodzianek tak jak ja."},
+  Shen:{clues:["Jest przywódcą zakonu Kinkou w Ioni, odpowiedzialnym za utrzymanie równowagi.","Jego ojciec, Kusho, poświęcił życie zakonu — Shen musi teraz naprawić te decyzje.","Jego relacja z Akali jest napięta: ona odrzuciła zakon, on jej rozumie, choć boli.","Walczy w cieniu, używając energii Ki i teleportacji, by chronić sojuszników przez cały świat.","Jego dewiza: równowaga za wszelką cenę — nawet jeśli oznacza to poświęcenie emocji."],quote:"Równowaga musi być zachowana — to jedyne, co się liczy."},
+  Swain:{clues:["Jest Wielkim Generałem Noxusu — najpotężniejszym politykiem i czarownikiem imperium.","Stracił rękę w Ioni przez zdradę własnych żołnierzy — i zapamiętał każdego z nich.","Pochłonął demona wrony, zyskując zdolność do wizji przyszłości i transformacji.","Widzi Runeterrę skazaną na zagładę — i wierzy, że tylko Noxus, pod jego przywództwem, może ją ocalić.","Jego rządy są oparte na brutalnej kalkulacji: poświęca wielu, by ratować wszystkich."],quote:"Widziałem przyszłość. Nie jest piękna."},
+  Thresh:{clues:["Jest strażnikiem Mglistych Wysp, zbierającym dusze w swoją latarnię dla czystej rozkoszy posiadania.","Nie działa z nienawiści ani rozkazów — torturuje dusze, bo sprawia mu to przyjemność.","Schwytał Sennę — żonę Luciana — i przez lata karmił się jej cierpieniem.","Jego latarnia zawiera setki dusz, z których każda jest skazana na wieczny ból.","W mitologii Shadow Isles jest uważany za jeden z najbardziej sadystycznych umysłów."],quote:"Twoja dusza będzie moim trofeum — wiecznym."},
+  Viego:{clues:["Był królem dawnego królestwa Camavor, który z miłości do żony Isolde wpędził świat w katastrofę.","Isolde umarła i stał się Ruinowanym Królem — istotą szerzącą Czarną Mgiełkę.","Jego Czarna Mgiełka zabija i wskrzesza jako niewolników — opanowała Mgłowe Wyspy.","Przybył do Runeterry, by zebrać Igłę Przeznaczenia — jedyną szansę na wskrzeszenie Isolde.","Jego historia to tragedia miłości, która pochłonęła cały świat razem z kochankiem."],quote:"Isolde… poczekaj na mnie. Świat zapłaci za twój odbiór."},
+  Vladimir:{clues:["Jest wampirem z Noxusu, który opanował hemomancję — magię krwi.","Jest nieśmiertelny i traktuje wieki jako okazję do nauki każdej sztuki, każdej przyjemności.","Niegdyś był śmiertelnikiem, który sprzedał duszę by opanować moc hemomancji.","Ukrywa okrucieństwo za maską kulturalnego arystokraty.","Jego krew jest jego bronią — i jego pożywieniem."],quote:"Krew jest życiem — twoja jest szczególnie smaczna."},
+  Warwick:{clues:["Był niegdyś człowiekiem — doktorem lub przestępcą, a może obydwoma — zanim Singed go przemienił.","Singed poddał go eksperymentom, tworząc potwora-wilka z okruchami człowieczeństwa.","Poluje przez Zaun, kierowany przez węch krwi i szczątki wspomnień o dawnym życiu.","Jego celem może być odkupienie — lub po prostu następna ofiara. Sam nie wie.","W serialu Arcane pojawia się jako mroczna postać tła, której tożsamość stopniowo się ujawnia."],quote:"Co to za zapach…? Krew. Znowu krew."},
+  Yasuo:{clues:["Jest renegatem z Ioni, fałszywie oskarżonym o zabójstwo swojego mistrza.","Jego brat Yone ścigał go, by go zabić — i zginął w tej walce.","Dręczony winą i ścigany przez zakony, wędruje sam, szukając prawdziwego mordercy.","Walczy z wiatrem — dosłownie — kontrolując powietrze przez styl miecza i tajemniczy miecz-droga.","Jego historia to medytacja o honorze, winie i niemożności ucieczki od przeszłości."],quote:"Droga zemsty usiana jest ofiarami — moimi i cudzymi."},
+  Yone:{clues:["Jest bratem Yasuo, który zginął z jego ręki podczas pojedynku.","Po śmierci powrócił z krainy między życiem a śmiercią, opanowany przez demona Azakana.","Nosi maskę, która blokuje demona — bez niej traci kontrolę nad swoim ciałem.","Walczy dwoma mieczami: jednym ze świata żywych, drugim z krainy śmierci.","Poszukuje Yasuo nie dla zemsty, lecz by zrozumieć, dlaczego ich drogi musiały się tak skończyć."],quote:"Brat mnie zabił. Teraz razem wracamy — bo takie jest nasze przekleństwo."},
+  Zed:{clues:["Jest mistrzem Klanu Cienia w Ioni, który opanował zakazaną sztukę magii cienia.","Jako uczeń był równorzędny z Shen — ale wybrał inną drogę, gdy zakon nie mógł ochronić Ioni.","Zabił własnego mistrza, by przejąć sekret cienia — czyn, który naznaczył go hańbą.","Jego rywalem jest Shen — dawny brat-uczeń, dziś śmiertelny wróg.","Wierzy, że koniec uzasadnia środki — i gotów jest ponieść każdą cenę, by osiągnąć cel."],quote:"Śmierć jest jak cień — zawsze blisko, zawsze cicha."},
+  Zoe:{clues:["Jest Aspektem Świtu — kosmiczną istotą z Targonu, która istnieje od zarania czasu.","Mimo tysięcy lat istnienia zachowuje mentalność dziecka — kapryśną, ciekawą, nieobliczalną.","Przybywa do Runeterry, by wprowadzać zmiany — 'równoważyć' świat według nieludzkich standardów.","Śledziła Solarisa i Lunari z rosnącym zainteresowaniem i nieraz ingerowała w losy ludzi.","Jej umiejętność kradnięcia przedmiotów od wrogów to literalne odzwierciedlenie jej natury — bierze wszystko, co ją zainteresuje."],quote:"Poczekaj! Chcę się pobawić — dlaczego wszyscy uciekają?"},
+  MissFortune:{clues:["Jej prawdziwe imię to Sarah Fortune i pochodzi z Bilgewateru.","Gangplank zlecił śmierć jej rodziny — i przez lata ukrywała tożsamość, planując zemstę.","Stała się łowczynią nagród i ostatecznie doprowadziła do upadku Gangplanka jako Króla Bilgewateru.","Walczy z dwoma pistoletami i jest jedną z najbardziej śmiercionośnych strzelców w regionie.","Jej historia to opowieść o zemście, która pochłania wszystko — i pytanie, co zostaje po jej wykonaniu."],quote:"Bilgewater mi zabrało wszystko. Odbieram z odsetkami."},
+  Lux:{clues:["Jest księżniczką Demacji i tajną użytkowniczką magii w antymagicznym królestwie.","Jej brat Garen zna jej sekret i zmagał się z wyborem: ujawnić ją czy chronić.","Na zewnątrz jest promienną dyplomatką — wewnętrznie jest kobietą, która musi ukrywać siebie.","Kontroluje Światło, tworząc bariery, wiązki energii i pola sił.","Jej historia nabiera głębi w kontekście Arcane i represji magicznych w Demacji."],quote:"Demacia potrzebuje mnie — nawet jeśli o tym nie wie."},
+};
+
 /* ════ STATE ════ */
 let version, allChampions, champData;
 const splash  = {target:null,guesses:[],over:false};
+const lore = {target:null,clues:[],revealedCount:1,guesses:[],over:false};
+const silhouette = {target:null,guesses:[],over:false,stage:0};
 const quote   = {target:null,quoteText:'',guesses:[],over:false};
 const ability = {target:null,spells:[],revealedCount:1,guesses:[],over:false};
 const emojiGame = {target:null,emojis:[],revealedCount:1,guesses:[],over:false};
@@ -698,6 +876,8 @@ async function loadChampions() {
     startEmojiGame();
     startSplashArtGame();
     startUltimateGame();
+    startLoreGame();
+    startSilhouetteGame();
   } catch(e) {
     document.getElementById('loading').innerHTML = `<div class="error-box">⚠️ Błąd ładowania danych.<br>${e.message}</div>`;
   }
@@ -711,6 +891,7 @@ function switchMode(mode) {
   document.querySelectorAll('.mode-panel').forEach(p => p.classList.remove('active'));
   document.getElementById(`panel-${mode}`).classList.add('active');
   document.getElementById('modal').style.display = 'none';
+  if(mode==='silhouette' && silhouette.target) renderSilhouette();
 }
 
 /* ════ HELPERS ════ */
@@ -848,7 +1029,10 @@ const SPELL_KEYS = ['P','Q','W','E','R'];
 
 async function startAbilityGame(){
   ability.target=allChampions[Math.floor(Math.random()*allChampions.length)];
-  ability.guesses=[];ability.over=false;ability.revealedCount=1;
+  ability.guesses=[];ability.over=false;
+  // random start slot: Q(1), W(2), E(3), R(4) — not P(0)
+  ability.startSlot = 1 + Math.floor(Math.random()*4);
+  ability.revealedCount = ability.startSlot + 1;
 
   document.getElementById('abilityGuesses').innerHTML='';
   document.getElementById('abilitySearch').value='';
@@ -882,14 +1066,14 @@ function renderAbilitySlots(){
   container.innerHTML='';
   ability.spells.forEach((sp,i)=>{
     const slot=document.createElement('div');
-    slot.className='ability-slot'+(i===0?' active-slot':'');
+    slot.className='ability-slot'+(i===ability.startSlot?' active-slot':'');
     slot.id=`slot-${i}`;
     const img=document.createElement('img');
     img.src=sp.img;
     img.alt=sp.name;
     img.onerror=()=>{img.src=ability.target.squareUrl;};
     // reveal if within revealedCount
-    if(i<ability.revealedCount) img.classList.add('revealed');
+    if(i===ability.startSlot) img.classList.add('revealed');
     const keyBadge=document.createElement('div');
     keyBadge.className='slot-key';
     keyBadge.textContent=sp.key;
@@ -906,7 +1090,7 @@ function revealNextAbilitySlot(){
   // update slots
   for(let i=0;i<ability.spells.length;i++){
     const img=document.getElementById(`slot-${i}`)?.querySelector('img');
-    if(img&&i<ability.revealedCount)img.classList.add('revealed');
+    if(img&&i<=ability.revealedCount-1)img.classList.add('revealed');
     const slot=document.getElementById(`slot-${i}`);
     if(slot) slot.classList.toggle('active-slot',i===ability.revealedCount-1);
   }
@@ -950,8 +1134,8 @@ function showAbilityRevealedInfo(){
    MODAL
    ════════════════════════ */
 function showModal(mode,win){
-  const t = mode==='splash' ? splash.target : mode==='quote' ? quote.target : mode==='ability' ? ability.target : mode==='splashart' ? splashart.target : mode==='ultimate' ? ultimate.target : emojiGame.target;
-  const tries = mode==='splash' ? splash.guesses.length : mode==='quote' ? quote.guesses.length : mode==='ability' ? ability.guesses.length : mode==='splashart' ? splashart.guesses.length : mode==='ultimate' ? ultimate.guesses.length : emojiGame.guesses.length;
+  const t = mode==='splash' ? splash.target : mode==='quote' ? quote.target : mode==='ability' ? ability.target : mode==='splashart' ? splashart.target : mode==='ultimate' ? ultimate.target : mode==='lore' ? lore.target : mode==='silhouette' ? silhouette.target : emojiGame.target;
+  const tries = mode==='splash' ? splash.guesses.length : mode==='quote' ? quote.guesses.length : mode==='ability' ? ability.guesses.length : mode==='splashart' ? splashart.guesses.length : mode==='ultimate' ? ultimate.guesses.length : mode==='lore' ? lore.guesses.length : mode==='silhouette' ? silhouette.guesses.length : emojiGame.guesses.length;
 
   // reset modal elements
   document.getElementById('modalSplash').style.display='none';
@@ -992,6 +1176,8 @@ function showModal(mode,win){
     else if(mode==='ability')startAbilityGame();
     else if(mode==='splashart')startSplashArtGame();
     else if(mode==='ultimate')startUltimateGame();
+    else if(mode==='lore')startLoreGame();
+    else if(mode==='silhouette')startSilhouetteGame();
     else startEmojiGame();
     document.getElementById('modal').style.display='none';
   };
@@ -1570,6 +1756,217 @@ function addUltimateGuess(champion){
   }
 }
 
+
+/* ════════════════════════
+   LORE GAME
+   ════════════════════════ */
+function startLoreGame(){
+  const pool = allChampions.filter(c => LORE_DB[c.id]);
+  lore.target = pool[Math.floor(Math.random()*pool.length)];
+  const db = LORE_DB[lore.target.id];
+  lore.clues = db.clues;
+  lore.revealedCount = 1;
+  lore.guesses = []; lore.over = false;
+
+  document.getElementById('loreGuesses').innerHTML = '';
+  document.getElementById('loreSearch').value = '';
+  document.getElementById('loreSearch').disabled = false;
+  document.getElementById('loreDrop').style.display = 'none';
+  document.getElementById('loreSubtitle').textContent = 'Odgadnij bohatera na podstawie historii';
+  document.getElementById('loreRevealedCount').textContent = '1';
+
+  // Reset clue boxes
+  for(let i=0;i<5;i++){
+    const box = document.getElementById('loreClue'+i);
+    const txt = document.getElementById('loreClueText'+i);
+    if(box){ box.style.display = i===0?'block':'none'; }
+    if(txt){ txt.textContent = lore.clues[i] || '…'; }
+  }
+  renderSmallPips('loreProgress', 1, 5);
+}
+
+function revealNextLoreClue(){
+  if(lore.revealedCount >= 5) return;
+  const box = document.getElementById('loreClue'+lore.revealedCount);
+  if(box) box.style.display = 'block';
+  lore.revealedCount++;
+  document.getElementById('loreRevealedCount').textContent = lore.revealedCount;
+  renderSmallPips('loreProgress', lore.revealedCount, 5);
+}
+
+function addLoreGuess(champion){
+  if(lore.over || lore.guesses.find(g=>g.id===champion.id)) return;
+  lore.guesses.push(champion);
+  const isWin = champion.id === lore.target.id;
+  const row = document.createElement('div');
+  row.className = `q-guess-row ${isWin?'correct':'wrong'}`;
+  row.innerHTML = `<img class="q-avatar" src="${champion.squareUrl}" alt="${champion.name}" onerror="this.style.display='none'"><span class="q-name">${champion.name}</span><span class="q-badge">${isWin?'✅':'❌'}</span>`;
+  document.getElementById('loreGuesses').prepend(row);
+  renderSmallPips('loreProgress', lore.revealedCount, 5);
+
+  if(isWin || lore.guesses.length >= 5){
+    lore.over = true;
+    document.getElementById('loreSearch').disabled = true;
+    // reveal all clues
+    for(let i=0;i<5;i++){ const b=document.getElementById('loreClue'+i); if(b) b.style.display='block'; }
+    lore.revealedCount = 5;
+    document.getElementById('loreRevealedCount').textContent = '5';
+    document.getElementById('loreSubtitle').textContent = isWin ? `To był ${lore.target.name}!` : `Odpowiedź: ${lore.target.name}`;
+    setTimeout(()=>showModal('lore', isWin), 500);
+  } else {
+    revealNextLoreClue();
+    document.getElementById('loreSubtitle').textContent = `Wskazówka ${lore.revealedCount}/5 odblokowana!`;
+  }
+}
+
+/* ════════════════════════
+   SILHOUETTE GAME
+   ════════════════════════ */
+const SIL_STAGES = [
+  {label:'Czarna sylwetka', brightness:0, blur:0, color:false, outline:false},
+  {label:'Kontur + poświata', brightness:0, blur:0, color:false, outline:true},
+  {label:'Lekkie kolory', brightness:0.25, blur:0, color:true, outline:true},
+  {label:'Więcej światła', brightness:0.55, blur:0, color:true, outline:false},
+  {label:'Pełny render', brightness:1, blur:0, color:true, outline:false},
+];
+
+function startSilhouetteGame(){
+  silhouette.target = allChampions[Math.floor(Math.random()*allChampions.length)];
+  silhouette.guesses = []; silhouette.over = false; silhouette.stage = 0;
+
+  document.getElementById('silGuesses').innerHTML = '';
+  document.getElementById('silSearch').value = '';
+  document.getElementById('silSearch').disabled = false;
+  document.getElementById('silDrop').style.display = 'none';
+  document.getElementById('silSubtitle').textContent = 'Każda pomyłka ujawnia więcej szczegółów';
+  renderSilPips();
+
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.src = silhouette.target.squareUrl;
+  img.onload = () => { silhouette._img = img; renderSilhouette(); };
+  img.onerror = () => { silhouette._img = null; };
+}
+
+function renderSilhouette(){
+  const canvas = document.getElementById('silCanvas');
+  if(!canvas) return;
+  const stage = SIL_STAGES[silhouette.stage];
+  document.getElementById('silStageLabel').textContent = `Etap ${silhouette.stage+1}/5 — ${stage.label}`;
+
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  if(!silhouette._img){ ctx.fillStyle='#111'; ctx.fillRect(0,0,W,H); return; }
+
+  // Draw background
+  ctx.fillStyle = '#050810';
+  ctx.fillRect(0,0,W,H);
+
+  const img = silhouette._img;
+  const aspect = img.naturalWidth/img.naturalHeight;
+  let dw, dh, dx, dy;
+  if(aspect>1){ dw=W*0.85; dh=dw/aspect; } else { dh=H*0.85; dw=dh*aspect; }
+  dx=(W-dw)/2; dy=(H-dh)/2;
+
+  if(stage.brightness===0 && !stage.color){
+    // Pure black silhouette
+    const offscreen = document.createElement('canvas');
+    offscreen.width=W; offscreen.height=H;
+    const oCtx=offscreen.getContext('2d');
+    oCtx.drawImage(img,dx,dy,dw,dh);
+    const imageData=oCtx.getImageData(0,0,W,H);
+    const data=imageData.data;
+    for(let i=0;i<data.length;i+=4){
+      const a=data[i+3];
+      if(a>20){ data[i]=0; data[i+1]=0; data[i+2]=0; data[i+3]=255; }
+    }
+    oCtx.putImageData(imageData,0,0);
+    ctx.drawImage(offscreen,0,0);
+    if(stage.outline){
+      // glow outline effect
+      ctx.shadowColor='#c8aa6e';
+      ctx.shadowBlur=18;
+      ctx.drawImage(offscreen,0,0);
+      ctx.shadowBlur=0;
+    }
+  } else {
+    // Partial or full color
+    const offscreen = document.createElement('canvas');
+    offscreen.width=W; offscreen.height=H;
+    const oCtx=offscreen.getContext('2d');
+    oCtx.drawImage(img,dx,dy,dw,dh);
+    const imageData=oCtx.getImageData(0,0,W,H);
+    const data=imageData.data;
+    const br=stage.brightness;
+    for(let i=0;i<data.length;i+=4){
+      const a=data[i+3];
+      if(a>20){
+        if(stage.color){
+          data[i]=Math.min(255,data[i]*br);
+          data[i+1]=Math.min(255,data[i+1]*br);
+          data[i+2]=Math.min(255,data[i+2]*br);
+          data[i+3]=255;
+        } else {
+          const gray=Math.min(255,(data[i]+data[i+1]+data[i+2])/3*br);
+          data[i]=gray; data[i+1]=gray; data[i+2]=gray; data[i+3]=255;
+        }
+      }
+    }
+    oCtx.putImageData(imageData,0,0);
+    if(stage.outline){
+      ctx.shadowColor='#c8aa6e66';
+      ctx.shadowBlur=12;
+    }
+    ctx.drawImage(offscreen,0,0);
+    ctx.shadowBlur=0;
+  }
+}
+
+function renderSilPips(){
+  const c=document.getElementById('silPips'); if(!c) return;
+  c.innerHTML='';
+  SIL_STAGES.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='sil-stage-pip'+(i<silhouette.stage?' used':i===silhouette.stage?' active':'');
+    c.appendChild(d);
+  });
+}
+
+function addSilhouetteGuess(champion){
+  if(silhouette.over || silhouette.guesses.find(g=>g.id===champion.id)) return;
+  silhouette.guesses.push(champion);
+  const isWin = champion.id === silhouette.target.id;
+  const row = document.createElement('div');
+  row.className = `q-guess-row ${isWin?'correct':'wrong'}`;
+  row.innerHTML = `<img class="q-avatar" src="${champion.squareUrl}" alt="${champion.name}" onerror="this.style.display='none'"><span class="q-name">${champion.name}</span><span class="q-badge">${isWin?'✅':'❌'}</span>`;
+  document.getElementById('silGuesses').prepend(row);
+
+  if(isWin){
+    silhouette.over = true;
+    document.getElementById('silSearch').disabled = true;
+    silhouette.stage = SIL_STAGES.length-1;
+    renderSilhouette();
+    renderSilPips();
+    document.getElementById('silSubtitle').textContent = `To był ${silhouette.target.name}!`;
+    setTimeout(()=>showModal('silhouette', true), 500);
+  } else {
+    if(silhouette.stage < SIL_STAGES.length-1){
+      silhouette.stage++;
+      renderSilhouette();
+      renderSilPips();
+      document.getElementById('silSubtitle').textContent = `Etap ${silhouette.stage+1}/5 — ${SIL_STAGES[silhouette.stage].label}`;
+    } else {
+      silhouette.over = true;
+      document.getElementById('silSearch').disabled = true;
+      document.getElementById('silSubtitle').textContent = `Odpowiedź: ${silhouette.target.name}`;
+      setTimeout(()=>showModal('silhouette', false), 500);
+    }
+  }
+}
+
+
 loadChampions().then(()=>{
   setupSearch('splashSearch','splashDrop',()=>splash.guesses,addSplashGuess);
   setupSearch('quoteSearch','quoteDrop',()=>quote.guesses,addQuoteGuess);
@@ -1577,6 +1974,8 @@ loadChampions().then(()=>{
   setupSearch('emojiSearch','emojiDrop',()=>emojiGame.guesses,addEmojiGuess);
   setupSearch('splashartSearch','splashartDrop',()=>splashart.guesses,addSplashArtGuess);
   setupSearch('ultimateSearch','ultimateDrop',()=>ultimate.guesses,addUltimateGuess);
+  setupSearch('loreSearch','loreDrop',()=>lore.guesses,addLoreGuess);
+  setupSearch('silSearch','silDrop',()=>silhouette.guesses,addSilhouetteGuess);
 });
 </script>
 </body>
