@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LoLdle PL</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Rajdhani:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#050810; --gold:#c8aa6e; --gold2:#f0e6c8; --dark:#0a0e1a;
+  --surface:#0d1117; --surface2:#111827; --border:#1e2d40; --border2:#c8aa6e44;
+  --text:#e8e0d0; --muted:#6b7a90; --green:#00c853; --yellow:#ffd600; --red:#ff1744;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -20%,#0b1e3a 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 100%,#1a0b2e 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* HEADER */
+header{width:100%;max-width:960px;display:flex;flex-direction:column;align-items:center;padding:24px 20px 0;position:relative;z-index:1;}
+.logo-wrap{display:flex;align-items:center;gap:16px;margin-bottom:6px;}
+.logo-icon{font-size:28px;}
+.logo{font-family:'Cinzel',serif;font-size:clamp(32px,6vw,58px);font-weight:900;letter-spacing:6px;background:linear-gradient(180deg,var(--gold2) 0%,var(--gold) 60%,#8a6a3e 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.logo-divider{width:320px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 16px;}
+
+/* TABS */
+.tabs{display:flex;gap:0;background:var(--surface);border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin-bottom:20px;position:relative;z-index:1;flex-wrap:wrap;}
+.tab{padding:11px 22px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:color .2s,background .2s;display:flex;align-items:center;gap:7px;white-space:nowrap;}
+.tab:hover{color:var(--text);}
+.tab.active{background:linear-gradient(135deg,rgba(200,170,110,.15),rgba(200,170,110,.05));color:var(--gold);box-shadow:inset 0 -2px 0 var(--gold);}
+
+/* LOADING */
+#loading{display:flex;flex-direction:column;align-items:center;gap:16px;padding:80px 20px;position:relative;z-index:1;}
+.spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* PANELS */
+.mode-panel{width:100%;max-width:960px;padding:0 16px 60px;position:relative;z-index:1;display:none;}
+.mode-panel.active{display:block;}
+
+/* SPLASH */
+.splash-panel{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--border2);margin-bottom:20px;box-shadow:0 0 40px rgba(200,170,110,.08);aspect-ratio:16/6;background:var(--dark);}
+.splash-img{width:100%;height:100%;object-fit:cover;filter:blur(32px) brightness(0.55);transform:scale(1.08);transition:filter 1.1s ease,transform 1.1s ease;}
+.splash-img.revealed{filter:blur(0) brightness(1);transform:scale(1);}
+.splash-overlay{position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,transparent 38%,transparent 62%,var(--bg) 100%);pointer-events:none;}
+.pips-overlay{position:absolute;bottom:14px;right:18px;display:flex;gap:6px;}
+.pip{width:26px;height:5px;border-radius:3px;background:var(--border);transition:background .3s;}
+.pip.used{background:var(--muted);}
+.pip.active{background:var(--gold);box-shadow:0 0 8px var(--gold);}
+.blur-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cinzel',serif;font-size:clamp(11px,2.2vw,18px);letter-spacing:6px;color:rgba(200,170,110,.7);text-transform:uppercase;text-align:center;pointer-events:none;transition:opacity .5s;white-space:nowrap;}
+
+/* QUOTE */
+.quote-panel{background:var(--surface);border:1px solid var(--border2);border-radius:16px;margin-bottom:20px;padding:36px 40px;box-shadow:0 0 40px rgba(200,170,110,.06);position:relative;overflow:hidden;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.quote-panel::before{content:'\201C';position:absolute;top:-10px;left:16px;font-family:'Crimson Text',serif;font-size:120px;color:rgba(200,170,110,.08);line-height:1;pointer-events:none;}
+.quote-panel::after{content:'\201D';position:absolute;bottom:-40px;right:16px;font-family:'Crimson Text',serif;font-size:120px;color:rgba(200,170,110,.08);line-height:1;pointer-events:none;}
+.quote-text{font-family:'Crimson Text',serif;font-size:clamp(18px,3vw,26px);font-style:italic;font-weight:600;color:var(--gold2);text-align:center;line-height:1.55;position:relative;z-index:1;text-shadow:0 2px 20px rgba(200,170,110,.2);}
+.quote-hint{margin-top:14px;font-size:12px;letter-spacing:2px;color:var(--muted);text-align:center;display:flex;align-items:center;gap:6px;}
+.quote-hint .pip-row{display:flex;gap:5px;}
+
+/* ══ ABILITY PANEL ══ */
+.ability-panel{background:var(--surface);border:1px solid var(--border2);border-radius:16px;margin-bottom:20px;padding:30px 24px;box-shadow:0 0 40px rgba(200,170,110,.06);display:flex;flex-direction:column;align-items:center;gap:20px;position:relative;}
+.ability-slots{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;}
+.ability-slot{position:relative;width:72px;height:72px;border-radius:10px;overflow:hidden;border:2px solid var(--border);background:var(--dark);cursor:default;transition:border-color .3s;}
+.ability-slot.active-slot{border-color:var(--gold);box-shadow:0 0 16px rgba(200,170,110,.4);}
+.ability-slot img{width:100%;height:100%;object-fit:cover;filter:blur(14px) brightness(0.5);transition:filter .8s ease;}
+.ability-slot img.revealed{filter:blur(0) brightness(1);}
+.ability-slot .slot-key{position:absolute;bottom:3px;right:5px;font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:rgba(200,170,110,.9);text-shadow:0 1px 4px #000;pointer-events:none;}
+.ability-slot .slot-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,170,110,.06),transparent);pointer-events:none;}
+.ability-reveal-btn{display:none;} /* hidden — auto-reveal on wrong guess */
+
+.ability-meta{text-align:center;}
+.ability-meta-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+.ability-progress{display:flex;gap:5px;justify-content:center;margin-top:6px;}
+
+.ability-revealed-info{display:none;flex-direction:column;align-items:center;gap:4px;margin-top:4px;}
+.ability-revealed-info.show{display:flex;}
+.ability-name-big{font-size:18px;font-weight:700;color:var(--gold2);letter-spacing:1px;}
+.ability-desc{font-size:12px;color:var(--muted);text-align:center;max-width:500px;line-height:1.5;}
+
+/* SIMPLE GUESS LIST (quote + ability) */
+.q-guesses{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.q-guess-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;animation:rowIn .35s cubic-bezier(.34,1.56,.64,1);}
+.q-guess-row.correct{border-color:var(--green);background:#001a08;}
+.q-guess-row.wrong{border-color:var(--red);background:#1a0005;}
+.q-avatar{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border2);object-fit:cover;flex-shrink:0;}
+.q-name{font-size:15px;font-weight:700;flex:1;}
+.q-badge{font-size:18px;}
+
+/* SEARCH */
+.search-wrap{position:relative;margin-bottom:16px;}
+.search-input{width:100%;background:var(--surface2);border:1.5px solid var(--border2);border-radius:10px;padding:14px 20px;font-size:16px;font-family:'Rajdhani',sans-serif;font-weight:600;color:var(--text);outline:none;letter-spacing:1px;transition:border-color .2s,box-shadow .2s;}
+.search-input:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(200,170,110,.15);}
+.search-input::placeholder{color:var(--muted);}
+.search-input:disabled{opacity:.4;cursor:not-allowed;}
+.dropdown{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;overflow:hidden;max-height:280px;overflow-y:auto;z-index:100;box-shadow:0 20px 60px rgba(0,0,0,.8);}
+.dropdown::-webkit-scrollbar{width:4px;}
+.dropdown::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.dd-item{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;transition:background .12s;font-size:15px;font-weight:600;letter-spacing:.5px;}
+.dd-item:hover{background:rgba(200,170,110,.08);}
+.dd-avatar{width:36px;height:36px;border-radius:50%;border:1px solid var(--border2);object-fit:cover;flex-shrink:0;}
+
+/* SPLASH GRID */
+.col-headers{display:grid;grid-template-columns:160px repeat(7,1fr);gap:5px;margin-bottom:6px;}
+.col-h{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:center;padding:4px 2px;}
+.col-h:first-child{text-align:left;padding-left:10px;}
+.guesses{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;}
+.guess-row{display:grid;grid-template-columns:160px repeat(7,1fr);gap:5px;animation:rowIn .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes rowIn{from{opacity:0;transform:translateY(-10px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+.cell{border-radius:8px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:64px;gap:2px;position:relative;overflow:hidden;}
+.cell::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.06),transparent 60%);pointer-events:none;}
+.cell-icon{font-size:17px;}
+.cell-val{font-size:12px;font-weight:800;letter-spacing:.4px;line-height:1.4;}
+.cell-arrow{display:inline-block;font-size:22px;font-weight:900;line-height:1;margin-top:2px;}
+.name-cell{align-items:flex-start;flex-direction:row;padding:8px 12px;gap:10px;font-size:13px;font-weight:700;letter-spacing:.5px;background:var(--surface);border:1px solid var(--border);color:var(--text);}
+.name-avatar{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border2);object-fit:cover;flex-shrink:0;}
+.name-info{display:flex;flex-direction:column;justify-content:center;gap:1px;}
+.name-title{font-size:9px;color:var(--muted);font-weight:400;letter-spacing:.5px;}
+.c-green{background:#001a08;border:1px solid var(--green);color:var(--green);}
+.c-yellow{background:#1a1400;border:1px solid var(--yellow);color:var(--yellow);}
+.c-red{background:#1a0005;border:1px solid var(--red);color:var(--red);}
+
+/* LEGEND */
+.legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;align-items:center;}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--text);}
+.leg-dot{width:22px;height:22px;border-radius:5px;flex-shrink:0;}
+.leg-arrow{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.87);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(8px);animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:36px;max-width:460px;width:92%;text-align:center;box-shadow:0 40px 100px rgba(0,0,0,.9);}
+.modal-splash{width:100%;border-radius:12px;margin-bottom:18px;border:1px solid var(--border2);max-height:190px;object-fit:cover;object-position:top;}
+.modal-ability-wrap{display:flex;gap:10px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}
+.modal-ability-slot{width:64px;height:64px;border-radius:8px;border:1px solid var(--border2);overflow:hidden;}
+.modal-ability-slot img{width:100%;height:100%;object-fit:cover;}
+.modal-emoji{font-size:48px;margin-bottom:10px;}
+.modal-title{font-family:'Cinzel',serif;font-size:34px;letter-spacing:4px;margin-bottom:6px;}
+.modal-title.win{color:var(--gold);}
+.modal-title.lose{color:var(--red);}
+.modal-quote-reveal{font-family:'Crimson Text',serif;font-size:17px;font-style:italic;color:var(--gold2);margin:8px 0 4px;line-height:1.5;}
+.modal-champion{font-size:22px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.modal-role{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.modal-sub{color:var(--muted);font-size:14px;margin-bottom:20px;}
+.btn-restart{background:linear-gradient(135deg,#8a6a1e,var(--gold),#8a6a1e);color:#0a0800;border:none;border-radius:10px;padding:13px 32px;font-size:14px;font-family:'Rajdhani',sans-serif;font-weight:700;cursor:pointer;letter-spacing:2px;text-transform:uppercase;transition:transform .15s,box-shadow .15s;}
+.btn-restart:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,170,110,.3);}
+/* ══ SPLASH ART GAME ══ */
+.splashart-container{margin-bottom:20px;}
+.splashart-frame{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--border2);aspect-ratio:16/7;background:var(--dark);box-shadow:0 0 40px rgba(200,170,110,.08);}
+.splashart-full{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;}
+.splashart-mask{position:absolute;inset:0;background:var(--bg);transition:none;}
+.splashart-question{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:clamp(10px,2vw,16px);letter-spacing:4px;color:rgba(200,170,110,.7);text-transform:uppercase;text-align:center;line-height:1.6;pointer-events:none;transition:opacity .4s;}
+.splashart-info{display:flex;align-items:center;justify-content:space-between;padding:10px 4px 0;}
+.splashart-progress-label{font-size:12px;letter-spacing:2px;color:var(--muted);}
+.splashart-pips{display:flex;gap:6px;}
+
+/* ══ ULTIMATE PANEL ══ */
+.ult-panel{background:var(--surface);border:1px solid var(--border2);border-radius:16px;margin-bottom:20px;padding:28px 24px;box-shadow:0 0 40px rgba(200,170,110,.06);}
+.ult-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;}
+.ult-badge{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#8a1a1a,#c8002a);border:2px solid #ff4444;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:26px;font-weight:900;color:#fff;box-shadow:0 0 20px rgba(255,68,68,.4);flex-shrink:0;}
+.ult-title{font-family:'Cinzel',serif;font-size:16px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;}
+.ult-subtitle{font-size:12px;color:var(--muted);margin-top:4px;}
+
+.ult-clues-row{display:grid;grid-template-columns:120px 1fr 2fr 1fr;gap:12px;margin-bottom:20px;}
+@media(max-width:600px){.ult-clues-row{grid-template-columns:1fr 1fr;}}
+
+.ult-icon-card{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.ult-icon-wrap{position:relative;width:100px;height:100px;border-radius:14px;overflow:hidden;border:2px solid #ff4444;box-shadow:0 0 24px rgba(255,68,68,.3);}
+.ult-icon-img{width:100%;height:100%;object-fit:cover;transition:filter .8s ease;}
+.ult-icon-img.blurred{filter:blur(18px) brightness(.4);}
+.ult-icon-img.revealed{filter:blur(0) brightness(1);}
+.ult-icon-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .5s;}
+.ult-r-badge{font-family:'Cinzel',serif;font-size:38px;font-weight:900;color:rgba(255,100,100,.9);text-shadow:0 0 20px #ff0000;}
+.ult-clue-label{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:700;}
+
+.ult-clue-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px;transition:border-color .4s,box-shadow .4s;}
+.ult-clue-card.unlocked{border-color:var(--gold);box-shadow:0 0 14px rgba(200,170,110,.2);animation:ultReveal .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes ultReveal{from{transform:scale(.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+.ult-clue-icon{font-size:20px;}
+.ult-clue-title{font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-weight:700;}
+.ult-clue-value{font-size:13px;font-weight:700;color:var(--text);line-height:1.5;}
+.ult-clue-value.locked{color:var(--border);font-size:24px;letter-spacing:4px;}
+
+.ult-progress-row{display:flex;align-items:center;gap:14px;}
+.ult-progress-label{font-size:12px;letter-spacing:1px;color:var(--muted);}
+
+.error-box{background:#1a0005;border:1px solid var(--red);border-radius:10px;padding:20px;text-align:center;color:var(--red);font-size:14px;margin:20px 0;}
+
+
+/* ══ EMOJI PANEL ══ */
+.emoji-panel{background:var(--surface);border:1px solid var(--border2);border-radius:16px;margin-bottom:20px;padding:32px 24px 28px;box-shadow:0 0 40px rgba(200,170,110,.06);display:flex;flex-direction:column;align-items:center;gap:18px;}
+.emoji-panel-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+.emoji-panel-sub{font-size:11px;color:var(--muted);margin-top:-10px;}
+.emoji-slots{display:flex;gap:16px;align-items:center;justify-content:center;}
+.emoji-slot{
+  width:80px;height:80px;border-radius:14px;
+  background:var(--surface2);border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:38px;
+  position:relative;
+  transition:border-color .4s,box-shadow .4s,transform .3s;
+}
+.emoji-slot.revealed{border-color:var(--gold);box-shadow:0 0 18px rgba(200,170,110,.3);}
+.emoji-slot.revealed.just-revealed{animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+.emoji-slot .emoji-q{font-size:32px;color:var(--muted);user-select:none;}
+.emoji-progress{display:flex;gap:5px;justify-content:center;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <span class="logo-icon">⚔️</span>
+    <div class="logo">LOLDLE PL</div>
+    <span class="logo-icon">🔮</span>
+  </div>
+  <div class="logo-divider"></div>
+</header>
+
+<div class="tabs" style="position:relative;z-index:1">
+  <button class="tab active" onclick="switchMode('splash')" id="tab-splash">🧩 Champion</button>
+  <button class="tab" onclick="switchMode('quote')"   id="tab-quote">💬 Cytat</button>
+  <button class="tab" onclick="switchMode('ability')" id="tab-ability">✨ Umiejętność</button>
+  <button class="tab" onclick="switchMode('emoji')"   id="tab-emoji">🎭 Emotikony</button>
+  <button class="tab" onclick="switchMode('splashart')" id="tab-splashart">🖼️ Splash Art</button>
+  <button class="tab" onclick="switchMode('ultimate')" id="tab-ultimate">⚡ Ultimate "R"</button>
+</div>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <div style="color:var(--muted);font-size:13px;letter-spacing:2px">Ładowanie danych Riot...</div>
+</div>
+
+<!-- ══ MODE 1: SPLASH ══ -->
+<div class="mode-panel active" id="panel-splash">
+  <div class="splash-panel">
+    <img class="splash-img" id="splashImg" src="" alt="Champion splash">
+    <div class="splash-overlay"></div>
+    <div class="blur-label" id="blurLabel">KIM JEST TEN CHAMPION?</div>
+  </div>
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:var(--green);border:1px solid var(--green)"></div>Prawidłowe</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#1a1400;border:1px solid var(--yellow)"></div>Częściowe</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#1a0005;border:1px solid var(--red)"></div>Nieprawidłowe</div>
+    <div class="leg-item"><div class="leg-arrow" style="background:#1a0005;border:1px solid var(--red);color:var(--red)">▲</div>Wyższy</div>
+    <div class="leg-item"><div class="leg-arrow" style="background:#1a0005;border:1px solid var(--red);color:var(--red)">▼</div>Niższy</div>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" id="splashSearch" type="text" placeholder="🔍  Wpisz nazwę championa...">
+    <div class="dropdown" id="splashDrop" style="display:none"></div>
+  </div>
+  <div class="col-headers">
+    <div class="col-h">Champion</div>
+    <div class="col-h">♀♂ Płeć</div>
+    <div class="col-h">🗺️ Pozycja(e)</div>
+    <div class="col-h">🐾 Gatunek</div>
+    <div class="col-h">💧 Zasoby</div>
+    <div class="col-h">🎯 Typ zasięgu</div>
+    <div class="col-h">🌍 Region(y)</div>
+    <div class="col-h">📅 Rok wydania</div>
+  </div>
+  <div class="guesses" id="splashGuesses"></div>
+</div>
+
+<!-- ══ MODE 2: QUOTE ══ -->
+<div class="mode-panel" id="panel-quote">
+  <div class="quote-panel">
+    <div class="quote-text" id="quoteText">…</div>
+    <div class="quote-hint">
+      <span>Próby:</span>
+      <div class="pip-row" id="quotePips"></div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" id="quoteSearch" type="text" placeholder="🔍  Kto to powiedział?">
+    <div class="dropdown" id="quoteDrop" style="display:none"></div>
+  </div>
+  <div class="q-guesses" id="quoteGuesses"></div>
+</div>
+
+<!-- ══ MODE 3: ABILITY ══ -->
+<div class="mode-panel" id="panel-ability">
+  <div class="ability-panel">
+    <div class="ability-meta">
+      <div class="ability-meta-title">Czyja to umiejętność?</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px">Z każdą błędną próbą odkrywana jest kolejna ikona</div>
+    </div>
+    <!-- 5 slotów: P, Q, W, E, R — odkrywane stopniowo -->
+    <div class="ability-slots" id="abilitySlots"></div>
+    <div class="ability-progress" id="abilityProgress"></div>
+    <div class="ability-revealed-info" id="abilityRevealedInfo">
+      <div class="ability-name-big" id="abilityNameBig"></div>
+      <div class="ability-desc" id="abilityDescText"></div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" id="abilitySearch" type="text" placeholder="🔍  Wpisz nazwę championa...">
+    <div class="dropdown" id="abilityDrop" style="display:none"></div>
+  </div>
+  <div class="q-guesses" id="abilityGuesses"></div>
+</div>
+
+<!-- ══ MODE 4: EMOJI ══ -->
+<div class="mode-panel" id="panel-emoji">
+  <div class="emoji-panel">
+    <div class="emoji-panel-title">Jakiego bohatera opisują te emotikony?</div>
+    <div class="emoji-slots" id="emojiSlots"></div>
+    <div class="emoji-panel-sub">Każda próba odblokowuje kolejną emotikonę.</div>
+    <div class="emoji-progress" id="emojiProgress"></div>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" id="emojiSearch" type="text" placeholder="🔍  Wpisz nazwę championa...">
+    <div class="dropdown" id="emojiDrop" style="display:none"></div>
+  </div>
+  <div class="q-guesses" id="emojiGuesses"></div>
+</div>
+
+<!-- ══ MODE 5: SPLASH ART ══ -->
+<div class="mode-panel" id="panel-splashart">
+  <div class="splashart-container">
+    <div class="splashart-frame" id="splashartFrame">
+      <img id="splashartImg" src="" alt="Splash Art" class="splashart-full">
+      <div class="splashart-mask" id="splashartMask"></div>
+      <div class="splashart-question" id="splashartQuestion">DO KTÓREGO BOHATERA<br>NALEŻY TEN SPLASH ART?</div>
+    </div>
+    <div class="splashart-info">
+      <div class="splashart-progress-label">Odkryta część: <span id="splashartPercent">10%</span></div>
+      <div class="splashart-pips" id="splashartPips"></div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" id="splashartSearch" type="text" placeholder="🔍  Wpisz nazwę championa...">
+    <div class="dropdown" id="splashartDrop" style="display:none"></div>
+  </div>
+  <div class="q-guesses" id="splashartGuesses"></div>
+</div>
+
+<!-- ══ MODE 6: ULTIMATE R ══ -->
+<div class="mode-panel" id="panel-ultimate">
+  <div class="ult-panel">
+    <div class="ult-header">
+      <div class="ult-badge">R</div>
+      <div>
+        <div class="ult-title">Czyj to Ultimate?</div>
+        <div class="ult-subtitle" id="ultSubtitle">Odgadnij championa po jego Ultimate</div>
+      </div>
+    </div>
+
+    <!-- Icon + clues row -->
+    <div class="ult-clues-row">
+      <!-- Icon card -->
+      <div class="ult-icon-card" id="ultIconCard">
+        <div class="ult-icon-wrap">
+          <img id="ultIcon" src="" alt="Ultimate" class="ult-icon-img blurred">
+          <div class="ult-icon-overlay" id="ultIconOverlay">
+            <span class="ult-r-badge">R</span>
+          </div>
+        </div>
+        <div class="ult-clue-label">Ikona</div>
+      </div>
+
+      <!-- Clue cards: name → desc → cooldown → cost — revealed one by one -->
+      <div class="ult-clue-card" id="ultClue0">
+        <div class="ult-clue-icon">📛</div>
+        <div class="ult-clue-title">Nazwa ulta</div>
+        <div class="ult-clue-value locked" id="ultClueName">?</div>
+      </div>
+      <div class="ult-clue-card" id="ultClue1">
+        <div class="ult-clue-icon">📜</div>
+        <div class="ult-clue-title">Opis umiejętności</div>
+        <div class="ult-clue-value locked" id="ultClueDesc">?</div>
+      </div>
+      <div class="ult-clue-card" id="ultClue2">
+        <div class="ult-clue-icon">⏱️</div>
+        <div class="ult-clue-title">Cooldown (s)</div>
+        <div class="ult-clue-value locked" id="ultClueCd">?</div>
+      </div>
+    </div>
+
+    <div class="ult-progress-row">
+      <div class="ult-progress-label">Wskazówki: <span id="ultRevealedCount">0</span> / 4</div>
+      <div id="ultProgress" class="ability-progress"></div>
+    </div>
+  </div>
+
+  <div class="search-wrap">
+    <input class="search-input" id="ultimateSearch" type="text" placeholder="🔍  Wpisz nazwę championa...">
+    <div class="dropdown" id="ultimateDrop" style="display:none"></div>
+  </div>
+  <div class="q-guesses" id="ultimateGuesses"></div>
+</div>
+
+<canvas id="confettiCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:999;display:none;"></canvas>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" style="display:none">
+  <div class="modal">
+    <img class="modal-splash" id="modalSplash" src="" alt="" style="display:none">
+    <div class="modal-ability-wrap" id="modalAbilityWrap" style="display:none"></div>
+    <div class="modal-quote-reveal" id="modalQuote" style="display:none"></div>
+    <div class="modal-emoji" id="modalEmoji"></div>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-champion" id="modalChampion"></div>
+    <div class="modal-role" id="modalRole"></div>
+    <div class="modal-sub" id="modalSub"></div>
+    <button class="btn-restart" id="restartBtn">⚔️ Nowa Gra</button>
+  </div>
+</div>
+
+<script>
+const VERSION_URL = 'https://ddragon.leagueoflegends.com/api/versions.json';
+const MAX = 6; // used only for pips display in non-champion modes
+
+/* ════ ENRICH DATA ════ */
+// gender, region, species, resource, rangeType, positions[], releaseYear
+const ENRICH = {
+  Aatrox:{region:'Runeterra',gender:'M',species:'Darkin',resource:'Brak',rangeType:'Wręcz',positions:['Top'],year:2013},
+  Ahri:{region:'Ionia',gender:'F',species:'Vastaya',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2012},
+  Akali:{region:'Ionia',gender:'F',species:'Człowiek',resource:'Energia',rangeType:'Wręcz',positions:['Mid','Top'],year:2010},
+  Akshan:{region:'Shurima',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid','Top'],year:2021},
+  Alistar:{region:'Runeterra',gender:'M',species:'Minotaur',resource:'Mana',rangeType:'Wręcz',positions:['Wsparcie'],year:2009},
+  Amumu:{region:'Shurima',gender:'M',species:'Undead',resource:'Mana',rangeType:'Wręcz',positions:['Dżungla','Wsparcie'],year:2009},
+  Anivia:{region:'Freljord',gender:'F',species:'Duch',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2009},
+  Annie:{region:'Runeterra',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid','Wsparcie'],year:2009},
+  Aphelios:{region:'Targon',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2019},
+  Ashe:{region:'Freljord',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC','Wsparcie'],year:2009},
+  AurelionSol:{region:'Targon',gender:'M',species:'Celestial',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2016},
+  Azir:{region:'Shurima',gender:'M',species:'Ascended',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2014},
+  Bard:{region:'Runeterra',gender:'M',species:'Celestial',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie'],year:2015},
+  BelVeth:{region:'Runeterra',gender:'F',species:'Void',resource:'Brak',rangeType:'Wręcz',positions:['Dżungla'],year:2022},
+  Blitzcrank:{region:'Zaun',gender:'M',species:'Golem',resource:'Mana',rangeType:'Wręcz',positions:['Wsparcie'],year:2009},
+  Brand:{region:'Freljord',gender:'M',species:'Undead',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie','Mid'],year:2011},
+  Braum:{region:'Freljord',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Wsparcie'],year:2014},
+  Briar:{region:'Noxus',gender:'F',species:'Undead',resource:'Brak',rangeType:'Wręcz',positions:['Dżungla'],year:2023},
+  Caitlyn:{region:'Piltover',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2011},
+  Camille:{region:'Piltover',gender:'F',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['Top'],year:2016},
+  Cassiopeia:{region:'Noxus',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2010},
+  ChoGath:{region:'Runeterra',gender:'M',species:'Void',resource:'Mana',rangeType:'Wręcz',positions:['Top','Mid'],year:2009},
+  Corki:{region:'Bandle City',gender:'M',species:'Yordle',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2009},
+  Darius:{region:'Noxus',gender:'M',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['Top'],year:2012},
+  Diana:{region:'Targon',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Mid','Dżungla'],year:2012},
+  Draven:{region:'Noxus',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2012},
+  DrMundo:{region:'Zaun',gender:'M',species:'Człowiek',resource:'Zdrowie',rangeType:'Wręcz',positions:['Top','Dżungla'],year:2010},
+  Ekko:{region:'Zaun',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Mid','Dżungla'],year:2015},
+  Elise:{region:'Noxus',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Dżungla'],year:2012},
+  Evelynn:{region:'Runeterra',gender:'F',species:'Demon',resource:'Mana',rangeType:'Wręcz',positions:['Dżungla'],year:2009},
+  Ezreal:{region:'Piltover',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2011},
+  Fiddlesticks:{region:'Runeterra',gender:'M',species:'Demon',resource:'Mana',rangeType:'Dystans',positions:['Dżungla','Wsparcie'],year:2009},
+  Fiora:{region:'Demacia',gender:'F',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['Top'],year:2012},
+  Fizz:{region:'Runeterra',gender:'M',species:'Vastaya',resource:'Mana',rangeType:'Wręcz',positions:['Mid'],year:2012},
+  Galio:{region:'Demacia',gender:'M',species:'Golem',resource:'Mana',rangeType:'Wręcz',positions:['Mid','Wsparcie'],year:2011},
+  Gangplank:{region:'Bilgewater',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Top'],year:2009},
+  Garen:{region:'Demacia',gender:'M',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['Top'],year:2010},
+  Gnar:{region:'Freljord',gender:'M',species:'Yordle',resource:'Wściekłość',rangeType:'Dystans',positions:['Top'],year:2014},
+  Gragas:{region:'Freljord',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Top','Dżungla','Mid'],year:2010},
+  Graves:{region:'Bilgewater',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC','Dżungla'],year:2011},
+  Gwen:{region:'Runeterra',gender:'F',species:'Undead',resource:'Mana',rangeType:'Wręcz',positions:['Top'],year:2021},
+  Hecarim:{region:'Shadow Isles',gender:'M',species:'Undead',resource:'Mana',rangeType:'Wręcz',positions:['Dżungla'],year:2012},
+  Heimerdinger:{region:'Piltover',gender:'M',species:'Yordle',resource:'Mana',rangeType:'Dystans',positions:['Mid','Top','Wsparcie'],year:2009},
+  Hwei:{region:'Ionia',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2023},
+  Illaoi:{region:'Bilgewater',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Top'],year:2015},
+  Irelia:{region:'Ionia',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Top','Mid'],year:2010},
+  Ivern:{region:'Ionia',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Dżungla'],year:2016},
+  Janna:{region:'Zaun',gender:'F',species:'Duch',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie'],year:2009},
+  JarvanIV:{region:'Demacia',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Dżungla','Top'],year:2011},
+  Jax:{region:'Runeterra',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Top','Dżungla'],year:2009},
+  Jayce:{region:'Piltover',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Top','Mid'],year:2012},
+  Jhin:{region:'Ionia',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2016},
+  Jinx:{region:'Zaun',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2013},
+  KaiSa:{region:'Shurima',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2018},
+  Kalista:{region:'Shadow Isles',gender:'F',species:'Undead',resource:'Wściekłość',rangeType:'Dystans',positions:['ADC'],year:2014},
+  Karma:{region:'Ionia',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie','Mid','Top'],year:2011},
+  Karthus:{region:'Shadow Isles',gender:'M',species:'Undead',resource:'Mana',rangeType:'Dystans',positions:['Dżungla','Mid'],year:2009},
+  Kassadin:{region:'Shurima',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Mid'],year:2009},
+  Katarina:{region:'Noxus',gender:'F',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['Mid'],year:2009},
+  Kayle:{region:'Demacia',gender:'F',species:'Ascended',resource:'Mana',rangeType:'Dystans',positions:['Top'],year:2009},
+  Kayn:{region:'Ionia',gender:'M',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['Dżungla'],year:2017},
+  Kennen:{region:'Ionia',gender:'M',species:'Yordle',resource:'Energia',rangeType:'Dystans',positions:['Top'],year:2010},
+  KhaZix:{region:'Runeterra',gender:'M',species:'Void',resource:'Mana',rangeType:'Wręcz',positions:['Dżungla'],year:2012},
+  Kindred:{region:'Runeterra',gender:'F',species:'Duch',resource:'Mana',rangeType:'Dystans',positions:['Dżungla'],year:2015},
+  Kled:{region:'Noxus',gender:'M',species:'Yordle',resource:'Brak',rangeType:'Wręcz',positions:['Top'],year:2016},
+  KogMaw:{region:'Runeterra',gender:'M',species:'Void',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2010},
+  KSante:{region:'Shurima',gender:'M',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['Top'],year:2022},
+  LeBlanc:{region:'Noxus',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2010},
+  LeeSin:{region:'Ionia',gender:'M',species:'Człowiek',resource:'Energia',rangeType:'Wręcz',positions:['Dżungla'],year:2012},
+  Leona:{region:'Targon',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Wsparcie'],year:2011},
+  Lillia:{region:'Ionia',gender:'F',species:'Duch',resource:'Mana',rangeType:'Dystans',positions:['Dżungla'],year:2020},
+  Lissandra:{region:'Freljord',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid','Top'],year:2013},
+  Lucian:{region:'Demacia',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC','Mid'],year:2013},
+  Lulu:{region:'Bandle City',gender:'F',species:'Yordle',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie','Top'],year:2012},
+  Lux:{region:'Demacia',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie','Mid'],year:2010},
+  Malphite:{region:'Ixtal',gender:'M',species:'Golem',resource:'Mana',rangeType:'Wręcz',positions:['Top'],year:2009},
+  Malzahar:{region:'Shurima',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2010},
+  Maokai:{region:'Shadow Isles',gender:'M',species:'Duch',resource:'Mana',rangeType:'Wręcz',positions:['Top','Wsparcie'],year:2011},
+  MasterYi:{region:'Ionia',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Dżungla'],year:2009},
+  Milio:{region:'Ixtal',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie'],year:2023},
+  MissFortune:{region:'Bilgewater',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2010},
+  MonkeyKing:{region:'Ionia',gender:'M',species:'Vastaya',resource:'Mana',rangeType:'Wręcz',positions:['Top','Dżungla'],year:2011},
+  Mordekaiser:{region:'Noxus',gender:'M',species:'Undead',resource:'Brak',rangeType:'Wręcz',positions:['Top'],year:2009},
+  Morgana:{region:'Demacia',gender:'F',species:'Ascended',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie','Mid'],year:2009},
+  Naafiri:{region:'Shurima',gender:'F',species:'Darkin',resource:'Mana',rangeType:'Wręcz',positions:['Mid'],year:2023},
+  Nami:{region:'Runeterra',gender:'F',species:'Vastaya',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie'],year:2012},
+  Nasus:{region:'Shurima',gender:'M',species:'Ascended',resource:'Mana',rangeType:'Wręcz',positions:['Top'],year:2009},
+  Nautilus:{region:'Runeterra',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Wsparcie','Top'],year:2012},
+  Neeko:{region:'Ixtal',gender:'F',species:'Vastaya',resource:'Mana',rangeType:'Dystans',positions:['Mid','Wsparcie'],year:2018},
+  Nidalee:{region:'Ixtal',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Dżungla'],year:2009},
+  Nilah:{region:'Runeterra',gender:'F',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['ADC'],year:2022},
+  Nocturne:{region:'Runeterra',gender:'M',species:'Demon',resource:'Wściekłość',rangeType:'Wręcz',positions:['Dżungla'],year:2011},
+  Nunu:{region:'Freljord',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Dżungla'],year:2009},
+  Olaf:{region:'Freljord',gender:'M',species:'Człowiek',resource:'Wściekłość',rangeType:'Wręcz',positions:['Top','Dżungla'],year:2010},
+  Orianna:{region:'Piltover',gender:'F',species:'Golem',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2012},
+  Ornn:{region:'Freljord',gender:'M',species:'Demi-Bóg',resource:'Mana',rangeType:'Wręcz',positions:['Top'],year:2017},
+  Pantheon:{region:'Targon',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Top','Mid','Wsparcie'],year:2010},
+  Poppy:{region:'Demacia',gender:'F',species:'Yordle',resource:'Mana',rangeType:'Wręcz',positions:['Top','Dżungla'],year:2010},
+  Pyke:{region:'Bilgewater',gender:'M',species:'Undead',resource:'Brak',rangeType:'Wręcz',positions:['Wsparcie'],year:2018},
+  Qiyana:{region:'Ixtal',gender:'F',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['Mid'],year:2019},
+  Quinn:{region:'Demacia',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Top','ADC'],year:2013},
+  Rakan:{region:'Ionia',gender:'M',species:'Vastaya',resource:'Mana',rangeType:'Wręcz',positions:['Wsparcie'],year:2017},
+  Rammus:{region:'Shurima',gender:'M',species:'Golem',resource:'Mana',rangeType:'Wręcz',positions:['Dżungla'],year:2009},
+  RekSai:{region:'Shurima',gender:'F',species:'Void',resource:'Wściekłość',rangeType:'Wręcz',positions:['Dżungla'],year:2014},
+  Rell:{region:'Noxus',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Wsparcie'],year:2020},
+  Renata:{region:'Zaun',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie'],year:2022},
+  Renekton:{region:'Shurima',gender:'M',species:'Ascended',resource:'Wściekłość',rangeType:'Wręcz',positions:['Top'],year:2012},
+  Rengar:{region:'Shurima',gender:'M',species:'Vastaya',resource:'Brak',rangeType:'Wręcz',positions:['Dżungla','Top'],year:2012},
+  Riven:{region:'Noxus',gender:'F',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['Top'],year:2012},
+  Rumble:{region:'Bandle City',gender:'M',species:'Yordle',resource:'Brak',rangeType:'Wręcz',positions:['Top'],year:2012},
+  Ryze:{region:'Runeterra',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2009},
+  Samira:{region:'Noxus',gender:'F',species:'Człowiek',resource:'Brak',rangeType:'Dystans',positions:['ADC'],year:2020},
+  Sejuani:{region:'Freljord',gender:'F',species:'Człowiek',resource:'Wściekłość',rangeType:'Wręcz',positions:['Dżungla'],year:2012},
+  Senna:{region:'Shadow Isles',gender:'F',species:'Undead',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie','ADC'],year:2019},
+  Seraphine:{region:'Piltover',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie','Mid'],year:2020},
+  Sett:{region:'Ionia',gender:'M',species:'Vastaya',resource:'Brak',rangeType:'Wręcz',positions:['Top','Wsparcie'],year:2020},
+  Shaco:{region:'Runeterra',gender:'M',species:'Demon',resource:'Mana',rangeType:'Wręcz',positions:['Dżungla'],year:2009},
+  Shen:{region:'Ionia',gender:'M',species:'Człowiek',resource:'Energia',rangeType:'Wręcz',positions:['Top'],year:2010},
+  Shyvana:{region:'Demacia',gender:'F',species:'Półsmok',resource:'Wściekłość',rangeType:'Wręcz',positions:['Dżungla'],year:2011},
+  Singed:{region:'Zaun',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Top'],year:2009},
+  Sion:{region:'Noxus',gender:'M',species:'Undead',resource:'Wściekłość',rangeType:'Wręcz',positions:['Top'],year:2009},
+  Sivir:{region:'Shurima',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2009},
+  Skarner:{region:'Shurima',gender:'M',species:'Brackern',resource:'Kryształy',rangeType:'Wręcz',positions:['Dżungla'],year:2011},
+  Sona:{region:'Demacia',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie'],year:2010},
+  Soraka:{region:'Targon',gender:'F',species:'Celestial',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie'],year:2009},
+  Swain:{region:'Noxus',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid','Wsparcie'],year:2010},
+  Sylas:{region:'Demacia',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Mid'],year:2019},
+  Syndra:{region:'Ionia',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2012},
+  TahmKench:{region:'Runeterra',gender:'M',species:'Demon',resource:'Mana',rangeType:'Wręcz',positions:['Wsparcie','Top'],year:2015},
+  Taliyah:{region:'Shurima',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Dżungla','Mid'],year:2016},
+  Talon:{region:'Noxus',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Mid'],year:2011},
+  Taric:{region:'Targon',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Wsparcie'],year:2009},
+  Teemo:{region:'Bandle City',gender:'M',species:'Yordle',resource:'Brak',rangeType:'Dystans',positions:['Top'],year:2009},
+  Thresh:{region:'Shadow Isles',gender:'M',species:'Undead',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie'],year:2013},
+  Tristana:{region:'Bandle City',gender:'F',species:'Yordle',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2009},
+  Trundle:{region:'Freljord',gender:'M',species:'Troll',resource:'Mana',rangeType:'Wręcz',positions:['Top','Dżungla'],year:2010},
+  Tryndamere:{region:'Freljord',gender:'M',species:'Człowiek',resource:'Wściekłość',rangeType:'Wręcz',positions:['Top'],year:2009},
+  TwistedFate:{region:'Bilgewater',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2009},
+  Twitch:{region:'Zaun',gender:'M',species:'Szczur',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2009},
+  Udyr:{region:'Freljord',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Dżungla'],year:2009},
+  Urgot:{region:'Zaun',gender:'M',species:'Człowiek',resource:'Wściekłość',rangeType:'Dystans',positions:['Top'],year:2010},
+  Varus:{region:'Ionia',gender:'M',species:'Darkin',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2012},
+  Vayne:{region:'Demacia',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2011},
+  Veigar:{region:'Bandle City',gender:'M',species:'Yordle',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2009},
+  VelKoz:{region:'Runeterra',gender:'M',species:'Void',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie','Mid'],year:2014},
+  Vex:{region:'Shadow Isles',gender:'F',species:'Yordle',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2021},
+  Vi:{region:'Piltover',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Dżungla'],year:2012},
+  Viego:{region:'Shadow Isles',gender:'M',species:'Undead',resource:'Brak',rangeType:'Wręcz',positions:['Dżungla'],year:2021},
+  Viktor:{region:'Zaun',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2011},
+  Vladimir:{region:'Noxus',gender:'M',species:'Człowiek',resource:'Brak',rangeType:'Dystans',positions:['Top','Mid'],year:2010},
+  Volibear:{region:'Freljord',gender:'M',species:'Demi-Bóg',resource:'Wściekłość',rangeType:'Wręcz',positions:['Top','Dżungla'],year:2011},
+  Warwick:{region:'Zaun',gender:'M',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['Dżungla','Top'],year:2009},
+  Xayah:{region:'Ionia',gender:'F',species:'Vastaya',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2017},
+  Xerath:{region:'Shurima',gender:'M',species:'Ascended',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie','Mid'],year:2012},
+  XinZhao:{region:'Demacia',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Wręcz',positions:['Dżungla'],year:2010},
+  Yasuo:{region:'Ionia',gender:'M',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['Mid','Top'],year:2013},
+  Yone:{region:'Ionia',gender:'M',species:'Undead',resource:'Brak',rangeType:'Wręcz',positions:['Mid','Top'],year:2020},
+  Yorick:{region:'Shadow Isles',gender:'M',species:'Undead',resource:'Mana',rangeType:'Wręcz',positions:['Top'],year:2011},
+  Yuumi:{region:'Bandle City',gender:'F',species:'Yordle',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie'],year:2019},
+  Zac:{region:'Zaun',gender:'M',species:'Golem',resource:'Zdrowie',rangeType:'Wręcz',positions:['Dżungla','Top'],year:2013},
+  Zed:{region:'Ionia',gender:'M',species:'Człowiek',resource:'Energia',rangeType:'Wręcz',positions:['Mid'],year:2012},
+  Zeri:{region:'Zaun',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2022},
+  Ziggs:{region:'Bandle City',gender:'M',species:'Yordle',resource:'Mana',rangeType:'Dystans',positions:['Mid','Wsparcie'],year:2012},
+  Zilean:{region:'Runeterra',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie','Mid'],year:2009},
+  Zoe:{region:'Targon',gender:'F',species:'Celestial',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2017},
+  Zyra:{region:'Ixtal',gender:'F',species:'Roślinny',resource:'Mana',rangeType:'Dystans',positions:['Wsparcie','Mid'],year:2012},
+  Smolder:{region:'Runeterra',gender:'M',species:'Smok',resource:'Mana',rangeType:'Dystans',positions:['ADC'],year:2024},
+  Aurora:{region:'Freljord',gender:'F',species:'Vastaya',resource:'Mana',rangeType:'Dystans',positions:['Top','Mid'],year:2024},
+  Ambessa:{region:'Noxus',gender:'F',species:'Człowiek',resource:'Brak',rangeType:'Wręcz',positions:['Top'],year:2024},
+  Mel:{region:'Noxus',gender:'F',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2025},
+};
+
+const TAG_PL = {Fighter:'Wojownik',Mage:'Mag',Assassin:'Zabójca',Tank:'Tank',Support:'Wsparcie',Marksman:'Strzelec'};
+
+/* ════ QUOTES ════ */
+const QUOTES = {
+  Ahri:["Moc, którą noszę, skradłam. Martwię się, czy jest moja.","Magia ludzkiej duszy jest piękna. I smaczna."],
+  Akali:["Nie jestem już twoją uczennią. Teraz jestem twoim wyrokiem.","Nie uciekniesz mi."],
+  Amumu:["Czy ktoś chce być moim przyjacielem?","Nikt mnie nie lubi. Wszyscy mnie nienawidzą."],
+  Annie:["Mam nowego przyjaciela — pożyczysz mu swój płaszcz?","Tibbers, czas na zabawę!"],
+  AurelionSol:["Stworzyłem gwiazdy, a Celestianie ukradli mi chwałę.","Widziałem narodziny wszechświata. Twój koniec to drobnostka.","Jestem piękny, majestatyczny i absolutnie niebezpieczny."],
+  Azir:["Shurima! Twoje dzieci powróciły!","Śmiertelnik, który zapomina przeszłość, skazany jest ją powtórzyć."],
+  Blitzcrank:["Przetwarzam. Działam. Wyciągam wnioski."],
+  Brand:["Ogień jest życiem — pozwól, że cię ożywię.","Płoń razem ze mną!"],
+  Braum:["Serce jak kamień, ramiona jak skała.","Nic nie może przebić serca Brauma!"],
+  Caitlyn:["Szkoda, że nie zdążysz tego powiedzieć w sądzie.","Wymiar sprawiedliwości — z lufą pistoletową."],
+  Darius:["Nie ma miejsca na słabych w Noxusie.","Noxus zwycięży!"],
+  Diana:["Księżyc nigdy nie prosi o pozwolenie, by świecić.","Byłam sługą Słońca — dziś jestem ostrzem Księżyca."],
+  Draven:["Witaj w lidze Draven!","Draven gra w Dravena!","Wszyscy kochają Dravena. Draven też."],
+  DrMundo:["Mundo idzie, gdzie Mundo chce!","Mundo stosuje właściwą terapię."],
+  Ekko:["Czas jest po mojej stronie — dosłownie.","Zaun mi zabrał dzieciństwo. Czas mu oddać dług."],
+  Ezreal:["Och, udało mi się — tym razem nawet celowałem!","Przygoda wzywa — i odpowiadam!"],
+  Fiddlesticks:["COKOLWIEK SŁYSZYSZ — NIC TAM NIE MA.","Czyhałem tu od zawsze. Wiesz o tym."],
+  Fiora:["Perfekcja wymaga poświęcenia. Ty jesteś tym poświęceniem.","Walczyłam z najlepszymi. Byłeś bliski wejścia na listę."],
+  Gangplank:["Kto włada morzem, włada światem."],
+  Garen:["DEMACIA!","Sprawiedliwość zostanie przywrócona!"],
+  Jax:["Gdybym miał prawdziwą broń, byłoby tu pusto.","Wyzwij mnie, jeśli śmiesz."],
+  Jhin:["Piękno jest bólem. Ból jest sztuką. Cztery.","Każda śmierć to arcydzieło.","Wystrzeliwuję cztery kule — czwarta jest dla ciebie."],
+  Jinx:["Pew pew pew!","Zabawa nigdy się nie kończy — chyba że skończy się amunicja.","Jeśli coś nie wybucha, to nie warto tego robić."],
+  Karthus:["Śmierć jest błogosławieństwem. Pozwól mi cię pobłogosławić."],
+  Katarina:["Bez zbędnych słów — tylko ostrze.","Zadanie: wykonane."],
+  Kayle:["Sprawiedliwość nie ma litości.","Sąd jest nieuchronny. Jak i ja."],
+  LeBlanc:["Kłamstwo jest formą sztuki.","Im więcej prawd, tym mniej możesz mi ufać."],
+  LeeSin:["Oczy są zbędne, gdy widzisz sercem.","Walczę w ciemności i nigdy nie chybiam."],
+  Leona:["Słońce jest sprawiedliwe. Ja też.","Jestem tarczą i mieczem Solari."],
+  Lissandra:["Zimno to nie śmierć — zimno to wieczność.","Freljord zamarznie, a ja będę rządzić."],
+  Lucian:["Demon zabrał mi żonę. Odpłacam mu.","Każda kula niesie jej imię."],
+  Lux:["Demacia potrzebuje mnie — nawet jeśli o tym nie wie.","Czas zaświecić!"],
+  MasterYi:["Prawdziwy mistrz wraca z każdej bitwy.","Alpha Strike!"],
+  MissFortune:["Bilgewater mi zabrało wszystko. Odbieram z odsetkami.","Dwie pistolety, jeden cel — twój żywot."],
+  Mordekaiser:["Śmierć jest tylko nowym początkiem.","Moje imperium jest wieczne — twoje nie."],
+  Morgana:["Bałam się. Teraz daję innym powody do strachu.","Niech łańcuchy was zwiążą."],
+  Nasus:["Czas jest moim sojusznikiem.","Każdy, kto stanie na mojej drodze, zostanie pochłonięty."],
+  Olaf:["Widziałem moją śmierć. Wychodzę jej naprzeciw.","Wikingowie nie boją się śmierci. Boją się umrzeć spokojnie."],
+  Pantheon:["Nie byłem gotowy, by umrzeć. Teraz nie jestem gotowy, by przestać walczyć.","Jestem wojownikiem, a nie bogiem. To wystarczy."],
+  Poppy:["Szukam Bohatera z Przepowiedni — to nie ja!","Mój młot mówi prawdę."],
+  Pyke:["Wszyscy mnie zostawili. Teraz zostawiam ich na dnie.","Lista rośnie. Ty jesteś na niej."],
+  Riven:["Złamany miecz może być ostrzem.","Nie ma litości dla tych, którzy ją zdradzili."],
+  Ryze:["Runy są kluczem do czegoś straszliwego.","Muszę zebrać wszystkie runy — zanim ktoś inny to zrobi."],
+  Samira:["Styl to wszystko. Wyniki — tuż za nim.","S jak Samira, S jak spektakularne."],
+  Shaco:["Skrzynka z niespodzianką — nikt nie lubi niespodzianek jak ja.","Ha ha ha ha ha!"],
+  Shen:["Równowaga musi być zachowana.","Działam z cienia."],
+  Singed:["Czy żałujesz, że mnie pościgłeś?","Formuła jest prosta. Ty — nie."],
+  Sion:["ZABIJAJ! ZNISZCZ! SION!","Umierałem raz — nie podobało mi się."],
+  Swain:["Noxus jest wielki — lecz mogłby być większy.","Widziałem przyszłość. Nie jest piękna."],
+  Syndra:["Czemu ograniczać potencjał? Twój lub mój?","Moja moc jest moja — i niczyja więcej."],
+  TahmKench:["Chodź, stary — jeden mały zakład...","Znam każde pragnienie. To moja broń."],
+  Thresh:["Twoja dusza będzie moim trofeum.","Przyciągam do siebie wszystko. I wszystkich."],
+  Tryndamere:["GNIEW!","Śmierć nie zdoła mnie powstrzymać!"],
+  TwistedFate:["Karta jest rzucona.","Mam twoją kartę — i twoje życie."],
+  Urgot:["Słabość jest grzechem. Grzech jest śmiercią.","Jestem doskonały. Ty — nie."],
+  Varus:["Dwie dusze, jedno ciało, jeden cel: zemsta.","Łuk jest napięty — jak moja dusza."],
+  Vayne:["Zło nie ukryje się przede mną.","Mrok żywi się strachem. Ja nie boję się mroku."],
+  Veigar:["Jestem ZŁY! Naprawdę!","Mój plan jest nieomylny — tym razem."],
+  Vex:["Wszystko jest złe i będzie gorzej. Idealnie.","Och, zamknijcie się ze swoją radością."],
+  Vi:["Najpierw pięść, potem pytania.","Chcesz gadać? Dobrze. Gadaj z moją pięścią."],
+  Viego:["Isolde... czekaj na mnie.","Świat umrze za to, że cię zabrał."],
+  Viktor:["Ewolucja jest koniecznością.","Przyszłość jest mechaniczna."],
+  Vladimir:["Krew jest życiem — twoja jest szczególnie smaczna.","Wampiry nie umierają. Ja też nie."],
+  Warwick:["Co to za zapach...? Krew.","Czuję cię. Zawsze."],
+  Yasuo:["Droga do zemsty usiana jest ofiarami.","Wiatr mówi wiele — słucham go uważnie."],
+  Yone:["Brat mnie zabił. Teraz razem wracamy.","Między życiem a śmiercią jest cienka linia. Stoję na niej."],
+  Zed:["Śmierć jest jak cień — zawsze blisko.","Klanu Cienia nie można zniszczyć."],
+  Ziggs:["BOOOM! Ha ha ha!","Miłość do wybuchów to nie choroba. To talent."],
+  Zilean:["Widziałem to wszystko. I jeszcze raz. I znowu.","Przeszłość, teraźniejszość, przyszłość — to tylko etykiety."],
+  Zoe:["Poczekaj! Chcę się pobawić!","Skrzydła! Gwiazdy! Szaleństwo!"],
+};
+
+/* ════ STATE ════ */
+let version, allChampions, champData;
+const splash  = {target:null,guesses:[],over:false};
+const quote   = {target:null,quoteText:'',guesses:[],over:false};
+const ability = {target:null,spells:[],revealedCount:1,guesses:[],over:false};
+const emojiGame = {target:null,emojis:[],revealedCount:1,guesses:[],over:false};
+let currentMode = 'splash';
+
+/* ════ LOAD ════ */
+async function loadChampions() {
+  try {
+    const vers = await (await fetch(VERSION_URL)).json();
+    version = vers[0];
+    const base = `https://ddragon.leagueoflegends.com/cdn/${version}`;
+    const data = await (await fetch(`${base}/data/pl_PL/champion.json`)).json();
+    champData = data.data; // keep raw for spell icons
+
+    allChampions = Object.values(data.data).map(c => {
+      const e = ENRICH[c.id] || {region:'Runeterra',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2009};
+      return {
+        id:c.id, name:c.name, title:c.title, tags:c.tags,
+        region:e.region, gender:e.gender,
+        species:e.species, resource:e.resource, rangeType:e.rangeType,
+        positions:e.positions, year:e.year,
+        hp:Math.round(c.stats.hp), attack:Math.round(c.stats.attackdamage), armor:Math.round(c.stats.armor),
+        squareUrl:`${base}/img/champion/${c.id}.png`,
+        splashUrl:`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${c.id}_0.jpg`,
+      };
+    });
+
+    document.getElementById('loading').style.display = 'none';
+    startSplashGame();
+    startQuoteGame();
+    startAbilityGame();
+    startEmojiGame();
+    startSplashArtGame();
+    startUltimateGame();
+  } catch(e) {
+    document.getElementById('loading').innerHTML = `<div class="error-box">⚠️ Błąd ładowania danych.<br>${e.message}</div>`;
+  }
+}
+
+/* ════ SWITCH MODE ════ */
+function switchMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`tab-${mode}`).classList.add('active');
+  document.querySelectorAll('.mode-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${mode}`).classList.add('active');
+  document.getElementById('modal').style.display = 'none';
+}
+
+/* ════ HELPERS ════ */
+function tagLabel(tags){return(tags||[]).map(t=>TAG_PL[t]||t).join('/');}
+function renderPips(id,used,total){
+  const p=document.getElementById(id);if(!p)return;
+  p.innerHTML='';
+  for(let i=0;i<total;i++){const d=document.createElement('div');d.className='pip'+(i<used?' used':i===used?' active':'');p.appendChild(d);}
+}
+function renderSmallPips(id,used,total){
+  const p=document.getElementById(id);if(!p)return;
+  p.innerHTML='';
+  for(let i=0;i<total;i++){
+    const d=document.createElement('div');
+    d.style.cssText=`width:18px;height:4px;border-radius:2px;background:${i<used?'var(--muted)':i===used?'var(--gold)':'var(--border)'}`;
+    if(i===used)d.style.boxShadow='0 0 6px var(--gold)';
+    p.appendChild(d);
+  }
+}
+function cmpTags(g,t){
+  const gi=new Set(g.tags),ti=new Set(t.tags);
+  if([...gi].every(x=>ti.has(x))&&gi.size===ti.size)return 'green';
+  return[...gi].some(x=>ti.has(x))?'yellow':'red';
+}
+function cmpStat(a,b,t1,t2){const d=Math.abs(a-b);if(d===0)return'green';if(d<=t1||d<=t2)return'yellow';return'red';}
+function arr(a,b,thresh){if(Math.abs(a-b)<thresh)return'';return a<b?' ⬆️':' ⬇️';}
+
+/* ════════════════════════
+   SPLASH GAME
+   ════════════════════════ */
+function startSplashGame(){
+  splash.target=allChampions[Math.floor(Math.random()*allChampions.length)];
+  splash.guesses=[];splash.over=false;
+  document.getElementById('splashGuesses').innerHTML='';
+  document.getElementById('splashSearch').value='';
+  document.getElementById('splashSearch').disabled=false;
+  document.getElementById('splashDrop').style.display='none';
+  const img=document.getElementById('splashImg');
+  img.src=splash.target.splashUrl;img.className='splash-img';
+  document.getElementById('blurLabel').style.opacity='1';
+}
+
+function cmpPositions(g,t){
+  const gi=new Set(g.positions),ti=new Set(t.positions);
+  if([...gi].every(x=>ti.has(x))&&gi.size===ti.size)return 'green';
+  return[...gi].some(x=>ti.has(x))?'yellow':'red';
+}
+function cmpYear(g,t){
+  const d=Math.abs(g.year-t.year);
+  if(d===0)return'green';
+  if(d<=3)return'yellow';
+  return'red';
+}
+function arrYear(g,t){if(g.year===t.year)return'';return g.year<t.year?'⬆':'⬇';}
+
+function addSplashGuess(champion){
+  if(splash.over||splash.guesses.find(g=>g.id===champion.id))return;
+  splash.guesses.push(champion);
+  const g=champion,t=splash.target,isWin=g.id===t.id;
+  const row=document.createElement('div');row.className='guess-row';
+  const nc=document.createElement('div');nc.className='cell name-cell';
+  nc.innerHTML=`<img class="name-avatar" src="${g.squareUrl}" alt="${g.name}" onerror="this.style.display='none'"><div class="name-info"><div>${g.name}</div><div class="name-title">${g.title}</div></div>`;
+  row.appendChild(nc);
+
+  // positions comparison
+  const posG = (g.positions||[]).join(', ');
+  const posT = new Set(t.positions||[]);
+  const posRes = cmpPositions(g,t);
+
+  [
+    {val:g.gender==='F'?'Kobieta':'Mężczyzna', res:g.gender===t.gender?'green':'red', arrow:''},
+    {val:posG, res:posRes, arrow:''},
+    {val:g.species, res:g.species===t.species?'green':'red', arrow:''},
+    {val:g.resource, res:g.resource===t.resource?'green':'red', arrow:''},
+    {val:g.rangeType, res:g.rangeType===t.rangeType?'green':'red', arrow:''},
+    {val:g.region, res:g.region===t.region?'green':'red', arrow:''},
+    {val:g.year, arrow:arrYear(g,t), res:cmpYear(g,t)},
+  ].forEach(col=>{
+    const cell=document.createElement('div');
+    cell.className=`cell ${col.res==='green'?'c-green':col.res==='yellow'?'c-yellow':'c-red'}`;
+    if(col.arrow){
+      cell.innerHTML=`<span class="cell-val">${col.val}</span><span class="cell-arrow">${col.arrow==='⬆'?'▲':'▼'}</span>`;
+    } else {
+      cell.innerHTML=`<span class="cell-val">${col.val}</span>`;
+    }
+    row.appendChild(cell);
+  });
+  document.getElementById('splashGuesses').prepend(row);
+  if(isWin){
+    splash.over=true;
+    document.getElementById('splashSearch').disabled=true;
+    document.getElementById('splashImg').classList.add('revealed');
+    document.getElementById('blurLabel').style.opacity='0';
+    setTimeout(()=>showModal('splash',isWin),800);
+  }
+}
+
+/* ════════════════════════
+   QUOTE GAME
+   ════════════════════════ */
+function startQuoteGame(){
+  const pool=allChampions.filter(c=>QUOTES[c.id]&&QUOTES[c.id].length>0);
+  quote.target=pool[Math.floor(Math.random()*pool.length)];
+  const qs=QUOTES[quote.target.id];
+  quote.quoteText=qs[Math.floor(Math.random()*qs.length)];
+  quote.guesses=[];quote.over=false;
+  document.getElementById('quoteText').textContent=`„${quote.quoteText}"`;
+  document.getElementById('quoteGuesses').innerHTML='';
+  document.getElementById('quoteSearch').value='';
+  document.getElementById('quoteSearch').disabled=false;
+  document.getElementById('quoteDrop').style.display='none';
+  renderSmallPips('quotePips',0,MAX);
+}
+
+function addQuoteGuess(champion){
+  if(quote.over||quote.guesses.find(g=>g.id===champion.id))return;
+  quote.guesses.push(champion);
+  const isWin=champion.id===quote.target.id;
+  const row=document.createElement('div');row.className=`q-guess-row ${isWin?'correct':'wrong'}`;
+  row.innerHTML=`<img class="q-avatar" src="${champion.squareUrl}" alt="${champion.name}" onerror="this.style.display='none'"><span class="q-name">${champion.name}</span><span class="q-badge">${isWin?'✅':'❌'}</span>`;
+  document.getElementById('quoteGuesses').prepend(row);
+  renderSmallPips('quotePips',quote.guesses.length,MAX);
+  if(isWin||quote.guesses.length>=MAX){
+    quote.over=true;
+    document.getElementById('quoteSearch').disabled=true;
+    setTimeout(()=>showModal('quote',isWin),400);
+  }
+}
+
+/* ════════════════════════
+   ABILITY GAME
+   ════════════════════════ */
+// Spell keys shown in order
+const SPELL_KEYS = ['P','Q','W','E','R'];
+
+async function startAbilityGame(){
+  ability.target=allChampions[Math.floor(Math.random()*allChampions.length)];
+  ability.guesses=[];ability.over=false;ability.revealedCount=1;
+
+  document.getElementById('abilityGuesses').innerHTML='';
+  document.getElementById('abilitySearch').value='';
+  document.getElementById('abilitySearch').disabled=false;
+  document.getElementById('abilityDrop').style.display='none';
+  document.getElementById('abilityRevealedInfo').classList.remove('show');
+
+  // fetch full champion data for spell images
+  const base=`https://ddragon.leagueoflegends.com/cdn/${version}`;
+  try {
+    const resp=await fetch(`${base}/data/pl_PL/champion/${ability.target.id}.json`);
+    const d=await resp.json();
+    const champ=d.data[ability.target.id];
+
+    // Build spell list: passive + Q W E R
+    ability.spells=[
+      {key:'P', name:champ.passive.name, img:`${base}/img/passive/${champ.passive.image.full}`, desc:champ.passive.description},
+      ...champ.spells.map((s,i)=>({key:SPELL_KEYS[i+1], name:s.name, img:`${base}/img/spell/${s.image.full}`, desc:s.description}))
+    ];
+  } catch(e) {
+    // fallback: use square icon only
+    ability.spells = SPELL_KEYS.map(k=>({key:k, name:k, img:ability.target.squareUrl, desc:''}));
+  }
+
+  renderAbilitySlots();
+  renderSmallPips('abilityProgress',0,MAX);
+}
+
+function renderAbilitySlots(){
+  const container=document.getElementById('abilitySlots');
+  container.innerHTML='';
+  ability.spells.forEach((sp,i)=>{
+    const slot=document.createElement('div');
+    slot.className='ability-slot'+(i===0?' active-slot':'');
+    slot.id=`slot-${i}`;
+    const img=document.createElement('img');
+    img.src=sp.img;
+    img.alt=sp.name;
+    img.onerror=()=>{img.src=ability.target.squareUrl;};
+    // reveal if within revealedCount
+    if(i<ability.revealedCount) img.classList.add('revealed');
+    const keyBadge=document.createElement('div');
+    keyBadge.className='slot-key';
+    keyBadge.textContent=sp.key;
+    const ov=document.createElement('div');
+    ov.className='slot-overlay';
+    slot.appendChild(img);slot.appendChild(keyBadge);slot.appendChild(ov);
+    container.appendChild(slot);
+  });
+}
+
+function revealNextAbilitySlot(){
+  if(ability.revealedCount>=ability.spells.length)return;
+  ability.revealedCount++;
+  // update slots
+  for(let i=0;i<ability.spells.length;i++){
+    const img=document.getElementById(`slot-${i}`)?.querySelector('img');
+    if(img&&i<ability.revealedCount)img.classList.add('revealed');
+    const slot=document.getElementById(`slot-${i}`);
+    if(slot) slot.classList.toggle('active-slot',i===ability.revealedCount-1);
+  }
+}
+
+function addAbilityGuess(champion){
+  if(ability.over||ability.guesses.find(g=>g.id===champion.id))return;
+  ability.guesses.push(champion);
+  const isWin=champion.id===ability.target.id;
+  const row=document.createElement('div');row.className=`q-guess-row ${isWin?'correct':'wrong'}`;
+  row.innerHTML=`<img class="q-avatar" src="${champion.squareUrl}" alt="${champion.name}" onerror="this.style.display='none'"><span class="q-name">${champion.name}</span><span class="q-badge">${isWin?'✅':'❌'}</span>`;
+  document.getElementById('abilityGuesses').prepend(row);
+  renderSmallPips('abilityProgress',ability.guesses.length,MAX);
+
+  if(isWin){
+    ability.over=true;
+    document.getElementById('abilitySearch').disabled=true;
+    // reveal all slots
+    ability.revealedCount=ability.spells.length;
+    renderAbilitySlots();
+    showAbilityRevealedInfo();
+    setTimeout(()=>showModal('ability',true),600);
+  } else {
+    // reveal next slot on wrong guess
+    revealNextAbilitySlot();
+  }
+}
+
+function showAbilityRevealedInfo(){
+  const info=document.getElementById('abilityRevealedInfo');
+  info.classList.add('show');
+  document.getElementById('abilityNameBig').textContent=ability.target.name;
+  // show name of the first revealed spell
+  if(ability.spells.length>0){
+    const desc=ability.spells[0].desc.replace(/<[^>]+>/g,'').substring(0,120);
+    document.getElementById('abilityDescText').textContent=`${ability.spells[0].name} (P) · ${ability.spells[1]?.name||''} (Q) · ${ability.spells[2]?.name||''} (W) · ${ability.spells[3]?.name||''} (E) · ${ability.spells[4]?.name||''} (R)`;
+  }
+}
+
+/* ════════════════════════
+   MODAL
+   ════════════════════════ */
+function showModal(mode,win){
+  const t = mode==='splash' ? splash.target : mode==='quote' ? quote.target : mode==='ability' ? ability.target : mode==='splashart' ? splashart.target : mode==='ultimate' ? ultimate.target : emojiGame.target;
+  const tries = mode==='splash' ? splash.guesses.length : mode==='quote' ? quote.guesses.length : mode==='ability' ? ability.guesses.length : mode==='splashart' ? splashart.guesses.length : mode==='ultimate' ? ultimate.guesses.length : emojiGame.guesses.length;
+
+  // reset modal elements
+  document.getElementById('modalSplash').style.display='none';
+  document.getElementById('modalAbilityWrap').style.display='none';
+  document.getElementById('modalQuote').style.display='none';
+
+  if(mode==='splash' || mode==='splashart'){
+    const el=document.getElementById('modalSplash');
+    el.src=t.splashUrl;el.style.display='block';
+  } else if(mode==='quote'){
+    const el=document.getElementById('modalQuote');
+    el.textContent=`„${quote.quoteText}"`;el.style.display='block';
+  } else if(mode==='ability') {
+    // show ability icons
+    const wrap=document.getElementById('modalAbilityWrap');
+    wrap.style.display='flex';
+    wrap.innerHTML=ability.spells.map(s=>`<div class="modal-ability-slot"><img src="${s.img}" alt="${s.name}" title="${s.name}" onerror="this.src='${t.squareUrl}'"></div>`).join('');
+  } else {
+    // emoji — show big emojis + champion splash
+    const el=document.getElementById('modalSplash');
+    el.src=t.splashUrl; el.style.display='block';
+    const eq=document.getElementById('modalQuote');
+    eq.textContent=emojiGame.emojis.join('  '); eq.style.display='block';
+    eq.style.fontStyle='normal'; eq.style.fontSize='28px'; eq.style.letterSpacing='6px';
+  }
+
+  document.getElementById('modalEmoji').textContent=win?'🏆':'💀';
+  const titleEl=document.getElementById('modalTitle');
+  titleEl.textContent=win?'ZGADŁEŚ!':'KONIEC';
+  titleEl.className=`modal-title ${win?'win':'lose'}`;
+  document.getElementById('modalChampion').textContent=t.name;
+  document.getElementById('modalRole').textContent=tagLabel(t.tags)+' · '+t.region;
+  document.getElementById('modalSub').textContent=win?`Po ${tries} ${tries===1?'próbie':tries<5?'próbach':'próbach'}!`:`Odpowiedź: ${t.name}`;
+
+  document.getElementById('restartBtn').onclick=()=>{
+    if(mode==='splash')startSplashGame();
+    else if(mode==='quote')startQuoteGame();
+    else if(mode==='ability')startAbilityGame();
+    else if(mode==='splashart')startSplashArtGame();
+    else if(mode==='ultimate')startUltimateGame();
+    else startEmojiGame();
+    document.getElementById('modal').style.display='none';
+  };
+  document.getElementById('modal').style.display='flex';
+  if(win) launchConfetti();
+}
+
+/* ════════════════════════
+   CONFETTI & FIREWORKS
+   ════════════════════════ */
+function launchConfetti(){
+  const canvas = document.getElementById('confettiCanvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+
+  const COLORS = ['#c8aa6e','#f0e6c8','#00c853','#ffd600','#ff6b35','#a259ff','#00bcd4','#ff4081'];
+  const particles = [];
+  const fireworks = [];
+
+  // create confetti particles
+  for(let i=0;i<180;i++){
+    particles.push({
+      x: Math.random()*canvas.width,
+      y: -20 - Math.random()*200,
+      w: 6+Math.random()*10,
+      h: 4+Math.random()*6,
+      color: COLORS[Math.floor(Math.random()*COLORS.length)],
+      rot: Math.random()*Math.PI*2,
+      rotSpeed: (Math.random()-.5)*.18,
+      vx: (Math.random()-.5)*4,
+      vy: 2+Math.random()*4,
+      gravity: .08+Math.random()*.06,
+      alpha: 1,
+      shape: Math.random()<.4?'circle':'rect',
+    });
+  }
+
+  // firework burst helper
+  function addBurst(x,y){
+    const color = COLORS[Math.floor(Math.random()*COLORS.length)];
+    for(let i=0;i<40;i++){
+      const angle = (i/40)*Math.PI*2;
+      const speed = 3+Math.random()*6;
+      fireworks.push({
+        x,y,
+        vx:Math.cos(angle)*speed,
+        vy:Math.sin(angle)*speed,
+        color,
+        alpha:1,
+        size:3+Math.random()*3,
+        trail:[],
+      });
+    }
+  }
+
+  // launch 3 bursts staggered
+  addBurst(canvas.width*.25, canvas.height*.3);
+  setTimeout(()=>addBurst(canvas.width*.75, canvas.height*.25), 250);
+  setTimeout(()=>addBurst(canvas.width*.5,  canvas.height*.2),  500);
+  setTimeout(()=>addBurst(canvas.width*.15, canvas.height*.4),  750);
+  setTimeout(()=>addBurst(canvas.width*.85, canvas.height*.35), 1000);
+
+  let frame = 0;
+  const MAX_FRAMES = 200;
+
+  function tick(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // draw firework sparks
+    fireworks.forEach(f=>{
+      f.trail.unshift({x:f.x,y:f.y});
+      if(f.trail.length>8)f.trail.pop();
+      f.trail.forEach((p,i)=>{
+        ctx.globalAlpha=(f.alpha*(1-i/f.trail.length))*.7;
+        ctx.fillStyle=f.color;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,f.size*(1-i/f.trail.length),0,Math.PI*2);
+        ctx.fill();
+      });
+      ctx.globalAlpha=f.alpha;
+      ctx.fillStyle=f.color;
+      ctx.beginPath();
+      ctx.arc(f.x,f.y,f.size,0,Math.PI*2);
+      ctx.fill();
+      f.x+=f.vx; f.y+=f.vy;
+      f.vy+=.12;
+      f.alpha-=.022;
+    });
+
+    // draw confetti
+    particles.forEach(p=>{
+      ctx.globalAlpha=p.alpha;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle=p.color;
+      if(p.shape==='circle'){
+        ctx.beginPath();
+        ctx.arc(0,0,p.w/2,0,Math.PI*2);
+        ctx.fill();
+      } else {
+        ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      }
+      ctx.restore();
+      p.x+=p.vx; p.y+=p.vy;
+      p.vy+=p.gravity;
+      p.vx*=.99;
+      p.rot+=p.rotSpeed;
+      if(frame>80) p.alpha-=.012;
+    });
+
+    ctx.globalAlpha=1;
+    frame++;
+    if(frame < MAX_FRAMES) requestAnimationFrame(tick);
+    else { ctx.clearRect(0,0,canvas.width,canvas.height); canvas.style.display='none'; }
+  }
+  tick();
+}
+
+/* ════════════════════════
+   SEARCH FACTORY
+   ════════════════════════ */
+function setupSearch(inputId,dropId,getGuesses,onPick){
+  const input=document.getElementById(inputId);
+  const drop=document.getElementById(dropId);
+  input.addEventListener('input',()=>{
+    const q=input.value.trim().toLowerCase();
+    if(!q||!allChampions){drop.style.display='none';return;}
+    const used=getGuesses();
+    const res=allChampions.filter(c=>c.name.toLowerCase().includes(q)&&!used.find(g=>g.id===c.id)).slice(0,10);
+    if(!res.length){drop.style.display='none';return;}
+    drop.innerHTML=res.map(c=>`<div class="dd-item" onclick="__pick_${inputId}('${c.id}')"><img class="dd-avatar" src="${c.squareUrl}" alt="${c.name}" onerror="this.style.display='none'"><span>${c.name}</span><span style="color:var(--muted);font-size:12px;margin-left:auto">${tagLabel(c.tags)}</span></div>`).join('');
+    drop.style.display='block';
+  });
+  window[`__pick_${inputId}`]=(id)=>{
+    const c=allChampions.find(x=>x.id===id);
+    if(c){onPick(c);input.value='';drop.style.display='none';}
+  };
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Escape')drop.style.display='none';
+    if(e.key==='Enter'){const f=drop.querySelector('.dd-item');if(f)f.click();}
+  });
+  document.addEventListener('click',ev=>{
+    if(!input.closest('.search-wrap').contains(ev.target))drop.style.display='none';
+  });
+}
+
+/* ════════════════════════
+   EMOJI GAME
+   ════════════════════════ */
+const EMOJI_DB = {
+  Aatrox:    ['⚔️','😈','🩸','🌑'],
+  Ahri:      ['🦊','💗','✨','🌙'],
+  Akali:     ['🥷','🎭','💨','🔪'],
+  Akshan:    ['🪃','🔭','🤠','⚖️'],
+  Alistar:   ['🐂','💪','🛡️','🤜'],
+  Amumu:     ['😢','🧟','⛓️','🏺'],
+  Anivia:    ['🐦','❄️','💎','🔄'],
+  Annie:     ['🔥','🧸','👧','🐻'],
+  Aphelios:  ['🌙','🔫','😶','👁️'],
+  Ashe:      ['🏹','❄️','👑','🦅'],
+  AurelionSol:['⭐','🐉','🌌','👑'],
+  Azir:      ['🐦','🏜️','👑','⚱️'],
+  Bard:      ['🎵','✨','⏳','🔔'],
+  BelVeth:   ['🪼','💜','🕳️','👁️'],
+  Blitzcrank:['🤖','⚡','✊','🏭'],
+  Brand:     ['🔥','😱','💥','🌋'],
+  Braum:     ['🧔','🛡️','🐴','❄️'],
+  Briar:     ['🧛','⛓️','💢','🩸'],
+  Caitlyn:   ['🎩','🔫','🪤','⚖️'],
+  Camille:   ['💎','🦵','🕵️','🔪'],
+  Cassiopeia:['🐍','💀','💚','👁️'],
+  ChoGath:   ['👾','🕳️','🍽️','💀'],
+  Corki:     ['✈️','💣','🧁','🔥'],
+  Darius:    ['🪓','🩸','💪','👑'],
+  Diana:     ['🌙','⚔️','🌑','💫'],
+  Draven:    ['🪓','🎭','💅','⭕'],
+  DrMundo:   ['🔪','💪','😈','🏥'],
+  Ekko:      ['⏰','⚡','🛹','🔄'],
+  Elise:     ['🕷️','🕸️','💋','🩸'],
+  Evelynn:   ['😈','💜','👠','💀'],
+  Ezreal:    ['💛','🧭','✨','🏛️'],
+  Fiddlesticks:['🌾','😱','👁️','💀'],
+  Fiora:     ['🤺','🌹','💨','⚔️'],
+  Fizz:      ['🐟','🦈','🎣','💦'],
+  Galio:     ['🗿','🏛️','💙','🛡️'],
+  Gangplank: ['🏴‍☠️','🍊','💣','⚓'],
+  Garen:     ['⚔️','🛡️','🏰','💙'],
+  Gnar:      ['🦕','❄️','😡','🪃'],
+  Gragas:    ['🍺','🛢️','💥','🍻'],
+  Graves:    ['🚬','🔫','💨','🃏'],
+  Gwen:      ['✂️','🧵','🪡','🌸'],
+  Hecarim:   ['🐎','💀','⚡','🌑'],
+  Heimerdinger:['🧠','⚙️','🤖','💡'],
+  Hwei:      ['🖌️','🎨','💙','😔'],
+  Illaoi:    ['🐙','⛵','💪','🌊'],
+  Irelia:    ['🗡️','💙','🩸','🌸'],
+  Ivern:     ['🌳','🌿','🐻','🍄'],
+  Janna:     ['🌪️','💨','☁️','🛡️'],
+  JarvanIV:  ['🏰','🇫','⚔️','💙'],
+  Jax:       ['💡','🪣','🏆','💪'],
+  Jayce:     ['⚡','🔨','🌟','🏙️'],
+  Jhin:      ['4️⃣','🎭','🌹','🔫'],
+  Jinx:      ['💥','🔫','😜','💙'],
+  KaiSa:     ['🦋','🟣','🏹','🌌'],
+  Kalista:   ['👻','🏹','⛓️','💀'],
+  Karma:     ['☯️','🌸','🔵','💫'],
+  Karthus:   ['💀','🎶','☠️','🕯️'],
+  Kassadin:  ['🕳️','💜','👁️','🌀'],
+  Katarina:  ['🗡️','🔴','💋','🌹'],
+  Kayle:     ['👼','⚔️','🌟','⚖️'],
+  Kayn:      ['🌑','🔴','⚔️','😈'],
+  Kennen:    ['⚡','🌪️','🐾','🥷'],
+  KhaZix:    ['🐛','🦂','💜','🧬'],
+  Kindred:   ['🐺','🐑','💀','☯️'],
+  Kled:      ['🦎','🔫','😡','🐴'],
+  KogMaw:    ['🤢','👾','💦','🍬'],
+  KSante:    ['🛡️','🏟️','🌍','💪'],
+  LeBlanc:   ['🎭','🔮','🌹','🃏'],
+  LeeSin:    ['👁️','🥋','🐉','🔥'],
+  Leona:     ['☀️','🛡️','⚔️','🌟'],
+  Lillia:    ['🌸','🦌','💤','🍃'],
+  Lissandra: ['❄️','👁️','🕶️','👸'],
+  Lucian:    ['🔫','💫','🕊️','🌟'],
+  Lulu:      ['🍄','✨','🐦','🌈'],
+  Lux:       ['✨','💛','🌟','🏰'],
+  Malphite:  ['🪨','💥','🌊','🏔️'],
+  Malzahar:  ['🕳️','💜','👁️','🐛'],
+  Maokai:    ['🌳','💀','🌿','⚓'],
+  MasterYi:  ['🥷','⚡','👁️','🗡️'],
+  Milio:     ['🔥','🧡','🐏','🛡️'],
+  MissFortune:['🔫','🍀','💋','🏴‍☠️'],
+  MonkeyKing:['🐒','🌩️','🥋','🎋'],
+  Mordekaiser:['💀','🔨','👑','🌑'],
+  Morgana:   ['🦋','⛓️','💜','😔'],
+  Naafiri:   ['🐕','🏜️','🗡️','🩸'],
+  Nami:      ['🌊','🐟','🌙','💫'],
+  Nasus:     ['🐺','⏳','🌑','🏺'],
+  Nautilus:  ['⚓','🌊','🤿','⛓️'],
+  Neeko:     ['🦎','🌈','🌺','✨'],
+  Nidalee:   ['🐆','🌿','🏹','💚'],
+  Nilah:     ['🌊','😊','⚔️','💙'],
+  Nocturne:  ['😱','🌑','🔪','💤'],
+  Nunu:      ['☃️','❄️','🐻','👦'],
+  Olaf:      ['🪓','🍺','🌊','🛡️'],
+  Orianna:   ['⚽','⚙️','🎀','🔵'],
+  Ornn:      ['🐏','🔥','⛏️','❄️'],
+  Pantheon:  ['🛡️','🏔️','⚔️','⭐'],
+  Poppy:     ['🔨','💙','🏰','🦔'],
+  Pyke:      ['🔱','💀','⚓','🩸'],
+  Qiyana:    ['💎','🌿','🌊','🔥'],
+  Quinn:     ['🦅','🏹','💙','🏰'],
+  Rakan:     ['🦚','💃','💖','🌸'],
+  Rammus:    ['🐢','👍','⚙️','🛡️'],
+  RekSai:    ['🦈','🏜️','🌀','💢'],
+  Rell:      ['🐎','⛓️','🔴','🛡️'],
+  Renata:    ['🌿','🧪','💼','💜'],
+  Renekton:  ['🐊','☀️','😡','⚔️'],
+  Rengar:    ['🦁','🏆','🔪','🌿'],
+  Riven:     ['⚔️','💔','🌸','🔴'],
+  Rumble:    ['🤖','🔥','⚙️','🧡'],
+  Ryze:      ['💙','📜','🔮','⚡'],
+  Samira:    ['🔫','🌹','🤸','💃'],
+  Sejuani:   ['🐗','❄️','👑','🔨'],
+  Senna:     ['🔫','⛓️','🌙','💛'],
+  Seraphine: ['🎤','🎵','✨','💜'],
+  Sett:      ['🤜','💰','🌸','😤'],
+  Shaco:     ['🃏','🤡','🗡️','💀'],
+  Shen:      ['🥷','⚖️','🌙','🛡️'],
+  Shyvana:   ['🐉','🔥','👸','⚔️'],
+  Singed:    ['☣️','💚','🏃','🧪'],
+  Sion:      ['🪓','💀','🏰','😡'],
+  Sivir:     ['🪃','🏜️','💰','⚔️'],
+  Skarner:   ['🦂','💜','⚡','🌀'],
+  Sona:      ['🎹','🎵','💙','✨'],
+  Soraka:    ['⭐','🌙','🍌','💚'],
+  Swain:     ['🐦','💀','👁️','🔴'],
+  Sylas:     ['⛓️','💜','🔥','😤'],
+  Syndra:    ['🔮','💜','🌑','👁️'],
+  TahmKench: ['🐸','🎩','💰','😈'],
+  Taliyah:   ['🪨','🌊','🏜️','💚'],
+  Talon:     ['🗡️','🐦','🔴','🌑'],
+  Taric:     ['💎','✨','🛡️','🌈'],
+  Teemo:     ['🍄','🐹','☠️','😈'],
+  Thresh:    ['⛓️','🏮','👁️','💀'],
+  Tristana:  ['💣','🔫','🐹','🚀'],
+  Trundle:   ['🧊','🪓','👑','🧟'],
+  Tryndamere:['😡','🗡️','❄️','💀'],
+  TwistedFate:['🃏','⭐','🎲','💛'],
+  Twitch:    ['🐀','☠️','🏹','💚'],
+  Udyr:      ['🐻','🐯','🐦','🐍'],
+  Urgot:     ['🦾','🔫','⚙️','💀'],
+  Varus:     ['🏹','💜','😢','🕳️'],
+  Vayne:     ['🏹','🌑','⚫','🔦'],
+  Veigar:    ['😈','🔮','💀','🧙'],
+  VelKoz:    ['👁️','🔵','💥','🦑'],
+  Vex:       ['😒','🌑','🐦','💜'],
+  Vi:        ['👊','💖','🏙️','🔒'],
+  Viego:     ['🖤','👑','💀','🌹'],
+  Viktor:    ['🤖','⚙️','💡','🏭'],
+  Vladimir:  ['🩸','🧛','💀','🌹'],
+  Volibear:  ['⚡','🐻','⛈️','👑'],
+  Warwick:   ['🐺','🩸','⛓️','🔬'],
+  Xayah:     ['🪶','🔴','💜','🌸'],
+  Xerath:    ['⚡','🏺','💀','🌌'],
+  XinZhao:   ['🏇','⚔️','💙','🌟'],
+  Yasuo:     ['💨','⚔️','🌸','🍃'],
+  Yone:      ['👺','⚔️','🌙','💀'],
+  Yorick:    ['⛏️','⚰️','👻','🌑'],
+  Yuumi:     ['🐱','📖','✨','💛'],
+  Zac:       ['🟢','💦','😁','🏙️'],
+  Zed:       ['🌑','🥷','🪞','💀'],
+  Zeri:      ['⚡','💙','🏙️','🐇'],
+  Ziggs:     ['💣','💥','🤪','🧨'],
+  Zilean:    ['⌛','📚','⏰','🔄'],
+  Zoe:       ['⭐','🌈','😜','💤'],
+  Zyra:      ['🌺','🌿','🔥','🕷️'],
+  Gwen:      ['✂️','🧵','🌸','🌑'],
+  Smolder:   ['🔥','🐉','👶','⭐'],
+  Aurora:    ['🌌','🦊','❄️','👁️'],
+  Ambessa:   ['🐆','⚔️','👑','🩸'],
+};
+
+function startEmojiGame(){
+  const pool = allChampions.filter(c => EMOJI_DB[c.id]);
+  emojiGame.target = pool[Math.floor(Math.random()*pool.length)];
+  emojiGame.emojis = EMOJI_DB[emojiGame.target.id];
+  emojiGame.revealedCount = 1;
+  emojiGame.guesses = []; emojiGame.over = false;
+
+  document.getElementById('emojiGuesses').innerHTML = '';
+  document.getElementById('emojiSearch').value = '';
+  document.getElementById('emojiSearch').disabled = false;
+  document.getElementById('emojiDrop').style.display = 'none';
+  renderEmojiSlots(false);
+  renderSmallPips('emojiProgress', 0, MAX);
+}
+
+function renderEmojiSlots(justRevealedIdx){
+  const c = document.getElementById('emojiSlots');
+  c.innerHTML = '';
+  emojiGame.emojis.forEach((em, i) => {
+    const slot = document.createElement('div');
+    const isRevealed = i < emojiGame.revealedCount;
+    slot.className = 'emoji-slot' + (isRevealed ? ' revealed' : '') + (isRevealed && i === justRevealedIdx ? ' just-revealed' : '');
+    if(isRevealed){
+      slot.textContent = em;
+    } else {
+      const q = document.createElement('span');
+      q.className = 'emoji-q'; q.textContent = '?';
+      slot.appendChild(q);
+    }
+    c.appendChild(slot);
+  });
+}
+
+function addEmojiGuess(champion){
+  if(emojiGame.over || emojiGame.guesses.find(g=>g.id===champion.id)) return;
+  emojiGame.guesses.push(champion);
+  const isWin = champion.id === emojiGame.target.id;
+
+  const row = document.createElement('div');
+  row.className = `q-guess-row ${isWin ? 'correct' : 'wrong'}`;
+  row.innerHTML = `<img class="q-avatar" src="${champion.squareUrl}" alt="${champion.name}" onerror="this.style.display='none'"><span class="q-name">${champion.name}</span><span class="q-badge">${isWin ? '✅' : '❌'}</span>`;
+  document.getElementById('emojiGuesses').prepend(row);
+  renderSmallPips('emojiProgress', emojiGame.guesses.length, MAX);
+
+  if(isWin){
+    emojiGame.over = true;
+    emojiGame.revealedCount = emojiGame.emojis.length;
+    document.getElementById('emojiSearch').disabled = true;
+    renderEmojiSlots(false);
+    setTimeout(()=>showModal('emoji', true), 400);
+  } else {
+    // reveal next emoji
+    const prevCount = emojiGame.revealedCount;
+    if(emojiGame.revealedCount < emojiGame.emojis.length) emojiGame.revealedCount++;
+    renderEmojiSlots(prevCount); // prevCount = index of newly revealed
+  }
+}
+/* ════════════════════════
+   SPLASH ART GAME
+   ════════════════════════ */
+const splashart = {target:null, guesses:[], over:false, revealed:10};
+// reveal steps: 10%, 20%, 35%, 50%, 70%, 100%
+const SA_STEPS = [10, 20, 35, 50, 70, 100];
+
+function startSplashArtGame(){
+  splashart.target = allChampions[Math.floor(Math.random()*allChampions.length)];
+  splashart.guesses = []; splashart.over = false; splashart.revealed = SA_STEPS[0];
+
+  document.getElementById('splashartGuesses').innerHTML = '';
+  document.getElementById('splashartSearch').value = '';
+  document.getElementById('splashartSearch').disabled = false;
+  document.getElementById('splashartDrop').style.display = 'none';
+  document.getElementById('splashartQuestion').style.opacity = '1';
+  document.getElementById('splashartPercent').textContent = SA_STEPS[0]+'%';
+
+  const img = document.getElementById('splashartImg');
+  img.src = splashart.target.splashUrl;
+  img.onload = () => updateSplashArtMask();
+  img.onerror = () => updateSplashArtMask();
+  updateSplashArtMask();
+  renderSplashArtPips();
+}
+
+function updateSplashArtMask(){
+  const mask = document.getElementById('splashartMask');
+  const pct = splashart.revealed;
+  // Reveal from left: show pct% of width, hide the rest
+  if(pct >= 100){
+    mask.style.display = 'none';
+    document.getElementById('splashartQuestion').style.opacity = '0';
+  } else {
+    mask.style.display = 'block';
+    // gradient: revealed part transparent, rest solid bg color
+    mask.style.background = `linear-gradient(to right, transparent ${pct}%, var(--bg) ${pct}%)`;
+    document.getElementById('splashartPercent').textContent = pct+'%';
+  }
+}
+
+function renderSplashArtPips(){
+  const container = document.getElementById('splashartPips');
+  container.innerHTML = '';
+  SA_STEPS.forEach((step, i) => {
+    const d = document.createElement('div');
+    const used = splashart.guesses.length;
+    d.style.cssText = `width:26px;height:5px;border-radius:3px;`;
+    if(i < used) d.style.background = 'var(--muted)';
+    else if(i === used) { d.style.background = 'var(--gold)'; d.style.boxShadow = '0 0 8px var(--gold)'; }
+    else d.style.background = 'var(--border)';
+    container.appendChild(d);
+  });
+}
+
+function addSplashArtGuess(champion){
+  if(splashart.over || splashart.guesses.find(g=>g.id===champion.id)) return;
+  splashart.guesses.push(champion);
+  const isWin = champion.id === splashart.target.id;
+
+  const row = document.createElement('div');
+  row.className = `q-guess-row ${isWin?'correct':'wrong'}`;
+  row.innerHTML = `<img class="q-avatar" src="${champion.squareUrl}" alt="${champion.name}" onerror="this.style.display='none'"><span class="q-name">${champion.name}</span><span class="q-badge">${isWin?'✅':'❌'}</span>`;
+  document.getElementById('splashartGuesses').prepend(row);
+
+  if(isWin){
+    splashart.over = true;
+    splashart.revealed = 100;
+    document.getElementById('splashartSearch').disabled = true;
+    updateSplashArtMask();
+    renderSplashArtPips();
+    setTimeout(()=>showModal('splashart', true), 500);
+  } else {
+    // reveal next step
+    const nextIdx = Math.min(splashart.guesses.length, SA_STEPS.length-1);
+    splashart.revealed = SA_STEPS[nextIdx];
+    updateSplashArtMask();
+    renderSplashArtPips();
+    document.getElementById('splashartPercent').textContent = splashart.revealed+'%';
+  }
+}
+
+/* ════════════════════════
+   ULTIMATE GAME
+   ════════════════════════ */
+const ultimate = {target:null, guesses:[], over:false, revealedClues:0, spell:null};
+// clue reveal order: 0=icon, 1=name, 2=desc, 3=cooldown
+// On start: icon is blurred (0 clues). Each wrong guess reveals next clue.
+
+async function startUltimateGame(){
+  ultimate.target = allChampions[Math.floor(Math.random()*allChampions.length)];
+  ultimate.guesses = []; ultimate.over = false; ultimate.revealedClues = 0; ultimate.spell = null;
+
+  document.getElementById('ultimateGuesses').innerHTML = '';
+  document.getElementById('ultimateSearch').value = '';
+  document.getElementById('ultimateSearch').disabled = false;
+  document.getElementById('ultimateDrop').style.display = 'none';
+
+  // Reset UI
+  document.getElementById('ultIcon').className = 'ult-icon-img blurred';
+  document.getElementById('ultIconOverlay').style.opacity = '1';
+  document.getElementById('ultClueName').textContent = '?';
+  document.getElementById('ultClueName').className = 'ult-clue-value locked';
+  document.getElementById('ultClueDesc').textContent = '?';
+  document.getElementById('ultClueDesc').className = 'ult-clue-value locked';
+  document.getElementById('ultClueCd').textContent = '?';
+  document.getElementById('ultClueCd').className = 'ult-clue-value locked';
+  document.getElementById('ultClue0').classList.remove('unlocked');
+  document.getElementById('ultClue1').classList.remove('unlocked');
+  document.getElementById('ultClue2').classList.remove('unlocked');
+  document.getElementById('ultRevealedCount').textContent = '0';
+  document.getElementById('ultSubtitle').textContent = 'Odgadnij championa po jego Ultimate';
+  renderSmallPips('ultProgress', 0, 4);
+
+  // Fetch champion spell data
+  const base = `https://ddragon.leagueoflegends.com/cdn/${version}`;
+  try {
+    const resp = await fetch(`${base}/data/pl_PL/champion/${ultimate.target.id}.json`);
+    const d = await resp.json();
+    const champ = d.data[ultimate.target.id];
+    const r = champ.spells[3]; // R is index 3
+    ultimate.spell = {
+      name: r.name,
+      img: `${base}/img/spell/${r.image.full}`,
+      desc: r.description.replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim(),
+      cooldown: r.cooldownBurn,
+    };
+    document.getElementById('ultIcon').src = ultimate.spell.img;
+    document.getElementById('ultIcon').onerror = ()=>{ document.getElementById('ultIcon').src = ultimate.target.squareUrl; };
+  } catch(e){
+    ultimate.spell = {name:'?', img: ultimate.target.squareUrl, desc:'Brak danych', cooldown:'?'};
+    document.getElementById('ultIcon').src = ultimate.spell.img;
+  }
+}
+
+function revealUltClue(clueIndex){
+  // clueIndex: 0=icon unblur, 1=name, 2=desc, 3=cooldown
+  if(!ultimate.spell) return;
+  ultimate.revealedClues = clueIndex+1;
+  document.getElementById('ultRevealedCount').textContent = ultimate.revealedClues;
+  renderSmallPips('ultProgress', ultimate.revealedClues, 4);
+
+  if(clueIndex === 0){
+    // Unblur icon
+    document.getElementById('ultIcon').classList.remove('blurred');
+    document.getElementById('ultIcon').classList.add('revealed');
+    document.getElementById('ultIconOverlay').style.opacity = '0';
+    document.getElementById('ultIconCard').classList.add('unlocked');
+  } else if(clueIndex === 1){
+    const el = document.getElementById('ultClueName');
+    el.textContent = ultimate.spell.name;
+    el.className = 'ult-clue-value';
+    document.getElementById('ultClue0').classList.add('unlocked');
+  } else if(clueIndex === 2){
+    const desc = ultimate.spell.desc;
+    const short = desc.length > 220 ? desc.substring(0,220)+'…' : desc;
+    const el = document.getElementById('ultClueDesc');
+    el.textContent = short;
+    el.className = 'ult-clue-value';
+    document.getElementById('ultClue1').classList.add('unlocked');
+  } else if(clueIndex === 3){
+    const el = document.getElementById('ultClueCd');
+    el.textContent = ultimate.spell.cooldown + 's';
+    el.className = 'ult-clue-value';
+    document.getElementById('ultClue2').classList.add('unlocked');
+  }
+}
+
+function revealAllUltClues(){
+  [0,1,2,3].forEach(i => revealUltClue(i));
+}
+
+function addUltimateGuess(champion){
+  if(ultimate.over || ultimate.guesses.find(g=>g.id===champion.id)) return;
+  ultimate.guesses.push(champion);
+  const isWin = champion.id === ultimate.target.id;
+
+  const row = document.createElement('div');
+  row.className = `q-guess-row ${isWin?'correct':'wrong'}`;
+  row.innerHTML = `<img class="q-avatar" src="${champion.squareUrl}" alt="${champion.name}" onerror="this.style.display='none'"><span class="q-name">${champion.name}</span><span class="q-badge">${isWin?'✅':'❌'}</span>`;
+  document.getElementById('ultimateGuesses').prepend(row);
+
+  if(isWin){
+    ultimate.over = true;
+    document.getElementById('ultimateSearch').disabled = true;
+    revealAllUltClues();
+    document.getElementById('ultSubtitle').textContent = `To był ${ultimate.target.name}!`;
+    setTimeout(()=>showModal('ultimate', true), 600);
+  } else {
+    // reveal next clue: 1st wrong=icon, 2nd=name, 3rd=desc, 4th=cooldown
+    const nextClue = Math.min(ultimate.guesses.length - 1, 3);
+    revealUltClue(nextClue);
+    document.getElementById('ultSubtitle').textContent = `Wskazówka ${ultimate.revealedClues}/4 odblokowana!`;
+  }
+}
+
+loadChampions().then(()=>{
+  setupSearch('splashSearch','splashDrop',()=>splash.guesses,addSplashGuess);
+  setupSearch('quoteSearch','quoteDrop',()=>quote.guesses,addQuoteGuess);
+  setupSearch('abilitySearch','abilityDrop',()=>ability.guesses,addAbilityGuess);
+  setupSearch('emojiSearch','emojiDrop',()=>emojiGame.guesses,addEmojiGuess);
+  setupSearch('splashartSearch','splashartDrop',()=>splashart.guesses,addSplashArtGuess);
+  setupSearch('ultimateSearch','ultimateDrop',()=>ultimate.guesses,addUltimateGuess);
+});
+</script>
+</body>
+</html>
