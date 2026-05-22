@@ -539,12 +539,9 @@ header{width:100%;max-width:960px;display:flex;flex-direction:column;align-items
 </div>
 
 <script>
-const MAX = 6;
-
-async function loadChampions() {
-  const res = await fetch('./data/champions.json');
-  return await res.json();
-}
+// Wszystkie requesty idą przez Vercel proxy - nie bezpośrednio do ddragon (Discord Activity blokuje zewnętrzne domeny)
+const API_BASE = '/api';
+const MAX = 6; // used only for pips display in non-champion modes
 
 /* ════ ENRICH DATA ════ */
 // gender, region, species, resource, rangeType, positions[], releaseYear
@@ -854,15 +851,12 @@ let currentMode = 'splash';
 /* ════ LOAD ════ */
 async function loadChampions() {
   try {
-    const champions = await loadChampions();
+    // Proxy Vercel: /api/champions zwraca { version, data } — omija blokadę Discord Activity
+    const proxyData = await (await fetch(`${API_BASE}/champions`)).json();
+    version = proxyData.version;
+    champData = proxyData.data;
 
-console.log(champions);
-    version = vers[0];
-    const base = `https://ddragon.leagueoflegends.com/cdn/${version}`;
-    const data = await (await fetch(`${base}/data/pl_PL/champion.json`)).json();
-    champData = data.data; // keep raw for spell icons
-
-    allChampions = Object.values(data.data).map(c => {
+    allChampions = Object.values(proxyData.data).map(c => {
       const e = ENRICH[c.id] || {region:'Runeterra',gender:'M',species:'Człowiek',resource:'Mana',rangeType:'Dystans',positions:['Mid'],year:2009};
       return {
         id:c.id, name:c.name, title:c.title, tags:c.tags,
@@ -870,8 +864,8 @@ console.log(champions);
         species:e.species, resource:e.resource, rangeType:e.rangeType,
         positions:e.positions, year:e.year,
         hp:Math.round(c.stats.hp), attack:Math.round(c.stats.attackdamage), armor:Math.round(c.stats.armor),
-        squareUrl:`${base}/img/champion/${c.id}.png`,
-        splashUrl:`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${c.id}_0.jpg`,
+        squareUrl:`${API_BASE}/img/champion/${c.id}.png`,
+        splashUrl:`${API_BASE}/img/splash/${c.id}_0.jpg`,
       };
     });
 
@@ -1046,17 +1040,16 @@ async function startAbilityGame(){
   document.getElementById('abilityDrop').style.display='none';
   document.getElementById('abilityRevealedInfo').classList.remove('show');
 
-  // fetch full champion data for spell images
-  const base=`https://ddragon.leagueoflegends.com/cdn/${version}`;
+  // fetch full champion data for spell images — przez proxy /api/spell (omija blokadę Discord Activity)
   try {
-    const resp=await fetch(`${base}/data/pl_PL/champion/${ability.target.id}.json`);
+    const resp=await fetch(`${API_BASE}/spell?champion=${ability.target.id}`);
     const d=await resp.json();
     const champ=d.data[ability.target.id];
 
     // Build spell list: passive + Q W E R
     ability.spells=[
-      {key:'P', name:champ.passive.name, img:`${base}/img/passive/${champ.passive.image.full}`, desc:champ.passive.description},
-      ...champ.spells.map((s,i)=>({key:SPELL_KEYS[i+1], name:s.name, img:`${base}/img/spell/${s.image.full}`, desc:s.description}))
+      {key:'P', name:champ.passive.name, img:`${API_BASE}/img/passive/${champ.passive.image.full}`, desc:champ.passive.description},
+      ...champ.spells.map((s,i)=>({key:SPELL_KEYS[i+1], name:s.name, img:`${API_BASE}/img/spell/${s.image.full}`, desc:s.description}))
     ];
   } catch(e) {
     // fallback: use square icon only
@@ -1680,16 +1673,15 @@ async function startUltimateGame(){
   document.getElementById('ultSubtitle').textContent = 'Odgadnij championa po jego Ultimate';
   renderSmallPips('ultProgress', 0, 4);
 
-  // Fetch champion spell data
-  const base = `https://ddragon.leagueoflegends.com/cdn/${version}`;
+  // Fetch champion spell data — przez proxy /api/spell (omija blokadę Discord Activity)
   try {
-    const resp = await fetch(`${base}/data/pl_PL/champion/${ultimate.target.id}.json`);
+    const resp = await fetch(`${API_BASE}/spell?champion=${ultimate.target.id}`);
     const d = await resp.json();
     const champ = d.data[ultimate.target.id];
     const r = champ.spells[3]; // R is index 3
     ultimate.spell = {
       name: r.name,
-      img: `${base}/img/spell/${r.image.full}`,
+      img: `${API_BASE}/img/spell/${r.image.full}`,
       desc: r.description.replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim(),
       cooldown: r.cooldownBurn,
     };
